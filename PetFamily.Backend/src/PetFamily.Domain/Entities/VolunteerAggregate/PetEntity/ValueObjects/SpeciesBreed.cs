@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
 
-namespace PetFamily.Domain.Entities.VolunterAggregate.PetEntity.ValueObjects
+namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 {
-    public class SpeciesBreed : ValueObject
+    public record SpeciesBreed
     {
         public SpeciesId SpeciesId { get; }
         public BreedId BreedId { get; }
@@ -19,12 +19,6 @@ namespace PetFamily.Domain.Entities.VolunterAggregate.PetEntity.ValueObjects
             var result = new SpeciesBreed(speciesId, breedId);
 
             return Result.Success(result);
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return SpeciesId;
-            yield return BreedId;
         }
     }
 }

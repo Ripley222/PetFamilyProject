@@ -1,8 +1,6 @@
-﻿using CSharpFunctionalExtensions;
-
-namespace PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects
+﻿namespace PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects
 {
-    public class BreedId : ValueObject
+    public record BreedId : IComparable<BreedId>
     {
         public Guid Value { get; }
 
@@ -11,19 +9,14 @@ namespace PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects
             Value = value;
         }
 
-        public static Result<BreedId> Create(Guid id)
+        public static BreedId New() => new BreedId(Guid.NewGuid());
+        public static BreedId Empty() => new BreedId(Guid.Empty);
+        public static BreedId Create(Guid value) => new BreedId(value);
+        
+        public int CompareTo(BreedId? other)
         {
-            if (id == Guid.Empty)
-                return Result.Failure<BreedId>("Отсутствует идентификационный номер породы животного!");
-
-            var result = new BreedId(id);
-
-            return Result.Success(result);
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Value;
+            if (other is null) return 1;
+            return Value.CompareTo(other.Value);
         }
     }
 }

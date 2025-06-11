@@ -1,32 +1,33 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.SpeciesAggregate;
 
-public class Species
+public class Species : Entity<SpeciesId>
 {
     private readonly List<Breed> _breeds = [];
     
     //ef core ctor
-    private Species() { }
-
-    private Species(SpeciesId id, string name)
+    private Species(SpeciesId id) : base(id)
     {
-        Id = id;
+    }
+
+    private Species(SpeciesId id, string name) :  base(id)
+    {
         Name = name;
     }
     
-    public SpeciesId Id { get; private set; }
     public string Name { get; private set; }
     public IReadOnlyList<Breed> Breeds => _breeds;
 
     public static Result<Species> Create(SpeciesId speciesId, string name)
     {
-        if (speciesId is null)
-            return Result.Failure<Species>("Необходимо указать идентификационный номер вида!");
-
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Species>("Необходимо указать название вида!");
+        
+        if (name.Length < Constants.MIN_LENGTH_NAME || name.Length > Constants.MAX_LENGTH_NAME)
+            return Result.Failure<Species>($"Длина названия вида должна составлять {Constants.MIN_LENGTH_NAME}-{Constants.MAX_LENGTH_NAME} символов!");
 
         var result = new Species(speciesId, name);
 

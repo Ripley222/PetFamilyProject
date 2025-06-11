@@ -4,20 +4,30 @@
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>2da0818c-2ab3-4bf2-bdbb-8ed536382eeb</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PetFamily.Application\PetFamily.Application.csproj" />
-      <ProjectReference Include="..\PetFamily.Domain\PetFamily.Domain.csproj" />
-      <ProjectReference Include="..\PetFamily.Infrastucture\PetFamily.Infrastucture.csproj" />
+      <ProjectReference Include="..\PetFamily.Infrastructure\PetFamily.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
