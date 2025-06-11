@@ -1,9 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.Entities.VolunterAggregate.PetEntity.ValueObjects
+namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 {
-    public class HelpStatus : ValueObject
+    public record HelpStatus
     {
+        public const int MAX_VALUE_LENGTH = 50;
+        
         public static readonly HelpStatus NeedsHelp = new(nameof(NeedsHelp));
         public static readonly HelpStatus LookingHome = new(nameof(LookingHome));
         public static readonly HelpStatus FoundHome = new(nameof(FoundHome));
@@ -22,19 +24,14 @@ namespace PetFamily.Domain.Entities.VolunterAggregate.PetEntity.ValueObjects
             if (string.IsNullOrWhiteSpace(value))
                 return Result.Failure<HelpStatus>("Необходимо указать статус помощи животному!");
 
-            var helpStatus = value.Trim().ToLower();
+            var valueToLower = value.Trim().ToLower();
 
-            if (_all.Any(h => h.Value.ToLower() == helpStatus) == false)
+            if (_all.Any(h => h.Value.ToLower() == valueToLower) == false)
                 return Result.Failure<HelpStatus>("Некорректный статус помощи животному!");
 
-            var result = new HelpStatus(helpStatus);
+            var helpStatus = new HelpStatus(valueToLower);
 
-            return Result.Success(result);
-        }
-
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            yield return Value;
+            return Result.Success(helpStatus);
         }
     }
 }
