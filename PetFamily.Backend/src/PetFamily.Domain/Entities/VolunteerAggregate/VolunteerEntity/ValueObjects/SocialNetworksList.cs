@@ -2,5 +2,20 @@
 
 public record SocialNetworksList
 {
-    public List<SocialNetwork>? SocialNetworks { get; private set; }
+    public IEnumerable<SocialNetwork> SocialNetworks { get; }
+
+    //ef core ctor
+    public SocialNetworksList()
+    {
+    }
+    
+    private SocialNetworksList(IEnumerable<SocialNetwork> socialNetworks)
+    {
+        SocialNetworks =  socialNetworks;
+    }
+
+    public static SocialNetworksList Create(IEnumerable<SocialNetwork> socialNetworks)
+    {
+        return new SocialNetworksList(socialNetworks);
+    }
 }

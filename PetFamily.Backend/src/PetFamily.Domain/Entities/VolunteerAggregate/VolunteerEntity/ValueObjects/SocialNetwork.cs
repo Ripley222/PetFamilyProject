@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects
 {
@@ -6,26 +7,24 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObje
     {
         public const int MAX_LENGTH_LINK = 200;
         
-        public string Title { get; }
-        public string Link { get; }
-
+        public string Title { get; } = string.Empty;
+        public string Link { get; } = string.Empty;
+        
         private SocialNetwork(string title, string link)
         {
             Title = title;
             Link = link;
         }
 
-        public static Result<SocialNetwork> Create(string name, string link)
+        public static Result<SocialNetwork, Error> Create(string title, string link)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                return Result.Failure<SocialNetwork>("Необходимо указать название социальной сети!");
+            if (title.Length > Constants.MAX_LENGTH_TITLE)
+               return Errors.General.ValueIsInvalid("Title");
 
-            if (string.IsNullOrWhiteSpace(link))
-                return Result.Failure<SocialNetwork>("Необходимо указать ссылку на социальную сеть!");
+            if (link.Length > MAX_LENGTH_LINK)
+                return Errors.General.ValueIsInvalid("Link");
 
-            var socialMedia = new SocialNetwork(name, link);
-
-            return Result.Success(socialMedia);
+            return new SocialNetwork(title, link);
         }
     }
 }

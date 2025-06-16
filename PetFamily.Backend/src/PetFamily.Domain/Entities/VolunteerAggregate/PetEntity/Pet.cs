@@ -23,7 +23,8 @@ public class Pet : Entity<PetId>
         bool isNeutered, 
         DateOnly dateOfBirth, 
         bool isVaccinated, 
-        HelpStatus helpStatus) :  base(id)
+        HelpStatus helpStatus,
+        RequisitesList requisitesDetails) :  base(id)
     {
         Name = name;
         SpeciesBreed = speciesBreed;
@@ -37,6 +38,7 @@ public class Pet : Entity<PetId>
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
+        RequisitesDetails = requisitesDetails;
         Created = DateOnly.FromDateTime(DateTime.Now);
     }
 
@@ -52,7 +54,7 @@ public class Pet : Entity<PetId>
     public DateOnly DateOfBirth { get; private set; }
     public bool IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
-    public RequisitesList? RequisitesDetails { get; private set; }
+    public RequisitesList RequisitesDetails { get; private set; }
     public DateOnly Created { get; private set; }
 
     public static Result<Pet> Create(
@@ -68,13 +70,14 @@ public class Pet : Entity<PetId>
         bool isNeutered,
         DateOnly dateOfBirth,
         bool isVaccinated,
-        HelpStatus helpStatus)
+        HelpStatus helpStatus,
+        RequisitesList requisitesDetails)
     {
         if (string.IsNullOrEmpty(color))
             return Result.Failure<Pet>("Необходимо указать цвет питомца!");
         
-        var pet = new Pet(petId, name, speciesBreed, description, color, healthInformation, address, 
-            bodySize, phoneNumber, isNeutered, dateOfBirth, isVaccinated, helpStatus);
+        var pet = new Pet(petId, name, speciesBreed, description, color, healthInformation, address,
+            bodySize, phoneNumber, isNeutered, dateOfBirth, isVaccinated, helpStatus, requisitesDetails);
 
         return Result.Success(pet);
     }

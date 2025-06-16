@@ -55,7 +55,8 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         });
 
         builder.Property(v => v.YearsOfExperience)
-            .IsRequired();
+            .IsRequired()
+            .HasColumnName("years_of_experience");
 
         builder.ComplexProperty(v => v.PhoneNumber, vb =>
         {
@@ -71,12 +72,14 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             vb.OwnsMany(s => s.SocialNetworks, sb =>
             {
                 sb.Property(sn => sn.Title)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_LENGTH_TITLE);
+                    .IsRequired(false)
+                    .HasMaxLength(Constants.MAX_LENGTH_TITLE)
+                    .HasColumnName("title");
                 
                 sb.Property(sn => sn.Link)
-                    .IsRequired()
-                    .HasMaxLength(SocialNetwork.MAX_LENGTH_LINK);
+                    .IsRequired(false)
+                    .HasMaxLength(SocialNetwork.MAX_LENGTH_LINK)
+                    .HasColumnName("link");;
             });
         });
 
@@ -86,16 +89,19 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             vb.OwnsMany(r => r.Requisites, rb =>
             {
                 rb.Property(r => r.AccountNumber)
-                    .IsRequired()
-                    .HasMaxLength(Requisites.LENGTH_ACCOUNT_NUMBER);
+                    .IsRequired(false)
+                    .HasMaxLength(Requisites.LENGTH_ACCOUNT_NUMBER)
+                    .HasColumnName("account_number");
                 
                 rb.Property(r => r.Title)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_LENGTH_TITLE);
+                    .IsRequired(false)
+                    .HasMaxLength(Constants.MAX_LENGTH_TITLE)
+                    .HasColumnName("title");
                 
                 rb.Property(r => r.Description)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION);
+                    .IsRequired(false)
+                    .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION)
+                    .HasColumnName("description");;
             });
         });
         

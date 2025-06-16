@@ -20,29 +20,27 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObje
             LastName = lastName;
         }
 
-        public static Result<FullName> Create(string firstName, string middleName, string lastName)
+        public static Result<FullName, Error> Create(string firstName, string middleName, string lastName)
         {
             if (string.IsNullOrWhiteSpace(firstName))
-                return Result.Failure<FullName>("Необходимо указать имя волонтера!");
+                return Errors.General.ValueIsRequired("FirstName");
             
-            if (firstName.Length < Constants.MIN_LENGTH_NAME || firstName.Length > Constants.MAX_LENGTH_NAME)
-                return Result.Failure<FullName>("Имя должно состоять из 2-100 символов!");
+            if (firstName.Length > Constants.MAX_LENGTH_NAME)
+                return Errors.General.ValueIsInvalid("FirstName");
 
             if (string.IsNullOrWhiteSpace(middleName))
-                return Result.Failure<FullName>("Необходимо указать фамилию волонтера!");
+                return Errors.General.ValueIsRequired("MiddleName");
             
-            if (middleName.Length < Constants.MIN_LENGTH_NAME || middleName.Length > Constants.MAX_LENGTH_NAME)
-                return Result.Failure<FullName>("Фамилия должна состоять из 2-100 символов!");
+            if (middleName.Length > Constants.MAX_LENGTH_NAME)
+                return Errors.General.ValueIsInvalid("MiddleName");
 
             if (string.IsNullOrWhiteSpace(lastName))
-                return Result.Failure<FullName>("Необходимо указать отчество волонтера!");
+                return Errors.General.ValueIsRequired("LastName");
             
-            if (lastName.Length < Constants.MIN_LENGTH_NAME || lastName.Length > Constants.MAX_LENGTH_NAME)
-                return Result.Failure<FullName>("Отчество должно состоять из 2-100 символов!");
+            if (lastName.Length > Constants.MAX_LENGTH_NAME)
+                return Errors.General.ValueIsInvalid("LastName");
 
-            var fullName = new FullName(firstName, middleName, lastName);
-
-            return Result.Success(fullName);
+            return new FullName(firstName, middleName, lastName);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 {
@@ -18,17 +19,15 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
             Height = height;
         }
 
-        public static Result<BodySize> Create(double weight, double height)
+        public static Result<BodySize, Error> Create(double weight, double height)
         {
-            if (weight < MAX_WEIGHT || weight > MAX_WEIGHT)
-                return Result.Failure<BodySize>($"Вес животного должен быть в пределах {MIN_WEIGHT}-{MAX_WEIGHT}кг!");
+            if (weight < MIN_WEIGHT || weight > MAX_WEIGHT)
+                return Errors.General.ValueIsInvalid(nameof(weight));
 
             if (height < MIN_HEIGHT || height > MAX_HEIGHT)
-                return Result.Failure<BodySize>($"Рост животного должен быть в пределах {MIN_HEIGHT}-{MAX_HEIGHT}см");
+                return Errors.General.ValueIsInvalid(nameof(height));
 
-            var bodySize = new BodySize(weight, height); 
-
-            return Result.Success(bodySize);
+            return new BodySize(weight, height);
         }
     }
 }

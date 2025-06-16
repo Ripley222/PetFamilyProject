@@ -12,16 +12,14 @@ public record Description
         Value = value;
     }
 
-    public static Result<Description> Create(string value)
+    public static Result<Description, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Result.Failure<Description>("Необходиом указать описание!");
+            return Errors.General.ValueIsRequired("Description");
         
-        if (value.Length < Constants.MIN_LENGTH_DESCRIPTION || value.Length > Constants.MAX_LENGTH_DESCRIPTION)
-            return Result.Failure<Description>($"Длина описания должна быть {Constants.MIN_LENGTH_DESCRIPTION}-{Constants.MAX_LENGTH_DESCRIPTION} символов!");
+        if (value.Length > Constants.MAX_LENGTH_DESCRIPTION)
+            return Errors.General.ValueIsInvalid("Description");
 
-        var description = new Description(value);
-        
-        return Result.Success(description);
+        return new Description(value);
     }
 }

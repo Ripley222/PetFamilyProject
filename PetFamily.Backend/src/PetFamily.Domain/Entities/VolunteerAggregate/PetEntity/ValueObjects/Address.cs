@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 {
@@ -19,29 +20,27 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
             House = house;
         }
 
-        public static Result<Address> Create(string city, string street, string house)
+        public static Result<Address, Error> Create(string city, string street, string house)
         {
             if (string.IsNullOrWhiteSpace(city))
-                return Result.Failure<Address>("Необходимо указать город в котором находится животное!");
+                return Errors.General.ValueIsRequired("City");
             
             if (city.Length > MAX_LENGTH_CITY)
-                return Result.Failure<Address>($"Максимальная длина названия города - {MAX_LENGTH_CITY} символов!");
+                return Errors.General.ValueIsInvalid("City");
 
             if (string.IsNullOrWhiteSpace(street))
-                return Result.Failure<Address>("Необходимо указать улицу на которой находится животное!");
+                return Errors.General.ValueIsRequired("Street");
             
             if (street.Length > MAX_LENGTH_STREET)
-                return Result.Failure<Address>($"Максимальная длина названия улицы - {MAX_LENGTH_STREET} символов!");
+                return Errors.General.ValueIsInvalid("Street");
 
             if (string.IsNullOrWhiteSpace(house))
-                return Result.Failure<Address>("Необходимо указать дом в котором находится животное!");
+                return Errors.General.ValueIsRequired("House");
             
             if (house.Length > MAX_LENGTH_HOUSE)
-                return Result.Failure<Address>($"Максимальная длина названия дома - {MAX_LENGTH_HOUSE} символов!");
+                return Errors.General.ValueIsInvalid("House");
 
-            var address = new Address(city, street, house);
-
-            return Result.Success(address);
+            return new Address(city, street, house);
         }
     }
 }

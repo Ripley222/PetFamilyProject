@@ -35,8 +35,8 @@ namespace PetFamily.Infrastructure.Migrations
                     last_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     middle_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: true),
-                    social_networks = table.Column<string>(type: "jsonb", nullable: true)
+                    requisites = table.Column<string>(type: "jsonb", nullable: false),
+                    social_networks = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,7 +82,7 @@ namespace PetFamily.Infrastructure.Migrations
                     help_status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: true)
+                    requisites = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {

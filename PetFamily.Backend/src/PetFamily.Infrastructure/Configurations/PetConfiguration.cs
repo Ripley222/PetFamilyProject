@@ -131,16 +131,19 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.OwnsMany(r => r.Requisites, rb =>
             {
                 rb.Property(r => r.AccountNumber)
-                    .IsRequired()
-                    .HasMaxLength(Requisites.LENGTH_ACCOUNT_NUMBER);
+                    .IsRequired(false)
+                    .HasMaxLength(Requisites.LENGTH_ACCOUNT_NUMBER)
+                    .HasColumnName("account_number");
                 
                 rb.Property(r => r.Title)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_LENGTH_TITLE);
+                    .IsRequired(false)
+                    .HasMaxLength(Constants.MAX_LENGTH_TITLE)
+                    .HasColumnName("title");
                 
                 rb.Property(r => r.Description)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION);
+                    .IsRequired(false)
+                    .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION)
+                    .HasColumnName("description");
             });
         });
         

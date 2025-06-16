@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using System.Text.RegularExpressions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects
 {
@@ -16,20 +17,18 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObje
              Value = value;
         }        
 
-        public static Result<EmailAddress> Create(string value)
+        public static Result<EmailAddress, Error> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return Result.Failure<EmailAddress>("Необходимо указать электронный адрес волонтёра!");
+                return Errors.General.ValueIsRequired("EmailAddress");
 
             if (Regex.IsMatch(value, EMAIL_REGEX) == false)
-                return Result.Failure<EmailAddress>("Неверный формат электронной почты!");
+                return Errors.General.ValueIsInvalid("EmailAddress");
             
             if (value.Length > MAX_LENGTH_EMAIL)
-                return Result.Failure<EmailAddress>($"Максимальная длина названия эл. почты должна быть {MAX_LENGTH_EMAIL} символов!");
+                return Errors.General.ValueIsInvalid("EmailAddress");
 
-            var emailAddress = new EmailAddress(value);
-
-            return Result.Success(emailAddress); 
+            return new EmailAddress(value);
         }
     }
 }
