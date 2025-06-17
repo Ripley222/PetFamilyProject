@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
@@ -11,11 +10,6 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
         public string AccountNumber { get; } = string.Empty;
         public string Title { get; } = string.Empty;
         public string Description { get; } = string.Empty;
-
-        [JsonConstructor]
-        private Requisite()
-        {
-        }
         
         private Requisite(string accountNumber, string title, string description)
         {
