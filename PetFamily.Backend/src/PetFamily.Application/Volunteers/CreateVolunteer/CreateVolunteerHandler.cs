@@ -45,16 +45,12 @@ public class CreateVolunteerHandler
             return phoneNumberResult.Error;
 
         var requisites = command.Requisites
-            .Select(dto => Requisites.Create(dto.AccountNumber, dto.Title, dto.Description).Value)
+            .Select(dto => Requisite.Create(dto.AccountNumber, dto.Title, dto.Description).Value)
             .ToList();
-
-        var requisitesList = new RequisitesList(requisites);
         
         var socialNetworks = command.SocialNetworks
             .Select(dto => SocialNetwork.Create(dto.Title, dto.Link).Value)
             .ToList();
-
-        var socialNetworksList = new SocialNetworksList(socialNetworks);
         
         var newVolunteer = Volunteer.Create(
             volunteerId, 
@@ -63,8 +59,8 @@ public class CreateVolunteerHandler
             descriptionResult.Value, 
             yearsOfExperience, 
             phoneNumberResult.Value,
-            requisitesList,
-            socialNetworksList);
+            requisites,
+            socialNetworks);
         
         if (newVolunteer.IsFailure)
             return newVolunteer.Error;

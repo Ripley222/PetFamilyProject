@@ -15,19 +15,19 @@ namespace PetFamily.Infrastructure.Migrations
                 name: "species",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_species", x => x.id);
+                    table.PrimaryKey("PK_species", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "volunteers",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     years_of_experience = table.Column<int>(type: "integer", nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     email_address = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -35,37 +35,37 @@ namespace PetFamily.Infrastructure.Migrations
                     last_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     middle_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
-                    social_networks = table.Column<string>(type: "jsonb", nullable: false)
+                    requisites = table.Column<string>(type: "jsonb", nullable: true),
+                    socials = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_volunteers", x => x.id);
+                    table.PrimaryKey("PK_volunteers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "breeds",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_breeds", x => x.id);
+                    table.PrimaryKey("PK_breeds", x => x.Id);
                     table.ForeignKey(
-                        name: "fk_breeds_species_species_id",
+                        name: "FK_breeds_species_species_id",
                         column: x => x.species_id,
                         principalTable: "species",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "pets",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: false),
                     breed_id = table.Column<Guid>(type: "uuid", nullable: false),
                     color = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -82,25 +82,25 @@ namespace PetFamily.Infrastructure.Migrations
                     help_status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false)
+                    requisites = table.Column<string>(type: "jsonb", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_pets", x => x.id);
+                    table.PrimaryKey("PK_pets", x => x.Id);
                     table.ForeignKey(
-                        name: "fk_pets_volunteers_volunteer_id",
+                        name: "FK_pets_volunteers_volunteer_id",
                         column: x => x.volunteer_id,
                         principalTable: "volunteers",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_breeds_species_id",
+                name: "IX_breeds_species_id",
                 table: "breeds",
                 column: "species_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_pets_volunteer_id",
+                name: "IX_pets_volunteer_id",
                 table: "pets",
                 column: "volunteer_id");
         }

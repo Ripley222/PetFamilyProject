@@ -22,16 +22,16 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             Description description,
             int yearsOfExperience,
             PhoneNumber phoneNumber,
-            RequisitesList requisitesDetails,
-            SocialNetworksList socialNetworksDetails)  : base(id)
+            List<Requisite> requisites,
+            List<SocialNetwork> socials)  : base(id)
         {
             FullName = fullName;
             EmailAddress = emailAddress;
             Description = description;
             YearsOfExperience = yearsOfExperience;
             PhoneNumber = phoneNumber;
-            RequisitesDetails = requisitesDetails;
-            SocialNetworksDetails = socialNetworksDetails;
+            Requisites = requisites;
+            Socials = socials;
         }
 
         public FullName FullName { get; private set; }
@@ -39,8 +39,8 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
         public Description Description { get; private set; }
         public int YearsOfExperience { get; private set; }        
         public PhoneNumber PhoneNumber { get; private set; }
-        public RequisitesList RequisitesDetails { get; private set; }
-        public SocialNetworksList SocialNetworksDetails { get; private set; }
+        public List<Requisite> Requisites { get; private set; }
+        public List<SocialNetwork> Socials { get; private set; }
         public IReadOnlyList<Pet> Pets => _pets;
         public int GetNumberOfAnimalsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
         public int GetNumberOfAnimalsLookingHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingHome);
@@ -53,8 +53,8 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             Description description,
             int yearsOfExperience,
             PhoneNumber phoneNumber,
-            RequisitesList requisitesDetails,
-            SocialNetworksList socialNetworksDetails)
+            List<Requisite> requisites,
+            List<SocialNetwork> socials)
         {
             if (yearsOfExperience < 0)
                 return Errors.General.ValueIsInvalid("YearsOfExperience");
@@ -66,8 +66,8 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
                 description, 
                 yearsOfExperience, 
                 phoneNumber,
-                requisitesDetails, 
-                socialNetworksDetails);
+                requisites, 
+                socials);
         }
 
         public Result AddPet(Pet pet)

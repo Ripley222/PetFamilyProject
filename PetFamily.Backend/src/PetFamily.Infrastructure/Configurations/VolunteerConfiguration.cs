@@ -66,43 +66,39 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("phone_number");
         });
 
-        builder.OwnsOne(v => v.SocialNetworksDetails, vb =>
+        builder.OwnsMany(v => v.Socials, vb =>
         {
-            vb.ToJson("social_networks");
-            vb.OwnsMany(s => s.SocialNetworks, sb =>
-            {
-                sb.Property(sn => sn.Title)
-                    .IsRequired(false)
-                    .HasMaxLength(Constants.MAX_LENGTH_TITLE)
-                    .HasColumnName("title");
-                
-                sb.Property(sn => sn.Link)
-                    .IsRequired(false)
-                    .HasMaxLength(SocialNetwork.MAX_LENGTH_LINK)
-                    .HasColumnName("link");;
-            });
+            vb.ToJson("socials");
+            
+            vb.Property(sn => sn.Title)
+                .IsRequired(false)
+                .HasMaxLength(Constants.MAX_LENGTH_TITLE)
+                .HasColumnName("title");
+
+            vb.Property(sn => sn.Link)
+                .IsRequired(false)
+                .HasMaxLength(SocialNetwork.MAX_LENGTH_LINK)
+                .HasColumnName("link");
         });
 
-        builder.OwnsOne(v => v.RequisitesDetails, vb =>
+        builder.OwnsMany(v => v.Requisites, vb =>
         {
             vb.ToJson("requisites");
-            vb.OwnsMany(r => r.Requisites, rb =>
-            {
-                rb.Property(r => r.AccountNumber)
-                    .IsRequired(false)
-                    .HasMaxLength(Requisites.LENGTH_ACCOUNT_NUMBER)
-                    .HasColumnName("account_number");
+            
+            vb.Property(r => r.AccountNumber)
+                .IsRequired(false)
+                .HasMaxLength(Requisite.LENGTH_ACCOUNT_NUMBER)
+                .HasColumnName("account_number");
                 
-                rb.Property(r => r.Title)
-                    .IsRequired(false)
-                    .HasMaxLength(Constants.MAX_LENGTH_TITLE)
-                    .HasColumnName("title");
+            vb.Property(r => r.Title)
+                .IsRequired(false)
+                .HasMaxLength(Constants.MAX_LENGTH_TITLE)
+                .HasColumnName("title");
                 
-                rb.Property(r => r.Description)
-                    .IsRequired(false)
-                    .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION)
-                    .HasColumnName("description");;
-            });
+            vb.Property(r => r.Description)
+                .IsRequired(false)
+                .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION)
+                .HasColumnName("description");
         });
         
         builder.HasMany(v => v.Pets)
