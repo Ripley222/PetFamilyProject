@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Text.Json.Serialization;
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects
@@ -9,6 +10,11 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObje
         
         public string Title { get; } = string.Empty;
         public string Link { get; } = string.Empty;
+        
+        [JsonConstructor]
+        private SocialNetwork()
+        {
+        }
         
         private SocialNetwork(string title, string link)
         {

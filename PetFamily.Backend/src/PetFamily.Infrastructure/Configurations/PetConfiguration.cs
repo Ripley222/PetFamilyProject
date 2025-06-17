@@ -125,26 +125,24 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("help_status");
         });
         
-        builder.OwnsOne(p => p.RequisitesDetails, pb =>
+        builder.OwnsMany(p => p.Requisites, pb =>
         {
             pb.ToJson("requisites");
-            pb.OwnsMany(r => r.Requisites, rb =>
-            {
-                rb.Property(r => r.AccountNumber)
-                    .IsRequired(false)
-                    .HasMaxLength(Requisites.LENGTH_ACCOUNT_NUMBER)
-                    .HasColumnName("account_number");
+            
+            pb.Property(r => r.AccountNumber)
+                .IsRequired(false)
+                .HasMaxLength(Requisite.LENGTH_ACCOUNT_NUMBER)
+                .HasColumnName("account_number");
                 
-                rb.Property(r => r.Title)
-                    .IsRequired(false)
-                    .HasMaxLength(Constants.MAX_LENGTH_TITLE)
-                    .HasColumnName("title");
+            pb.Property(r => r.Title)
+                .IsRequired(false)
+                .HasMaxLength(Constants.MAX_LENGTH_TITLE)
+                .HasColumnName("title");
                 
-                rb.Property(r => r.Description)
-                    .IsRequired(false)
-                    .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION)
-                    .HasColumnName("description");
-            });
+            pb.Property(r => r.Description)
+                .IsRequired(false)
+                .HasMaxLength(Constants.MAX_LENGTH_DESCRIPTION)
+                .HasColumnName("description");
         });
         
         builder.Property(p => p.Created)

@@ -24,7 +24,7 @@ public class Pet : Entity<PetId>
         DateOnly dateOfBirth, 
         bool isVaccinated, 
         HelpStatus helpStatus,
-        RequisitesList requisitesDetails) :  base(id)
+        List<Requisite> requisites) :  base(id)
     {
         Name = name;
         SpeciesBreed = speciesBreed;
@@ -38,7 +38,7 @@ public class Pet : Entity<PetId>
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        RequisitesDetails = requisitesDetails;
+        Requisites = requisites;
         Created = DateOnly.FromDateTime(DateTime.Now);
     }
 
@@ -54,7 +54,7 @@ public class Pet : Entity<PetId>
     public DateOnly DateOfBirth { get; private set; }
     public bool IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
-    public RequisitesList RequisitesDetails { get; private set; }
+    public List<Requisite> Requisites { get; private set; }
     public DateOnly Created { get; private set; }
 
     public static Result<Pet> Create(
@@ -71,7 +71,7 @@ public class Pet : Entity<PetId>
         DateOnly dateOfBirth,
         bool isVaccinated,
         HelpStatus helpStatus,
-        RequisitesList requisitesDetails)
+        List<Requisite> requisites)
     {
         if (string.IsNullOrEmpty(color))
             return Result.Failure<Pet>("Необходимо указать цвет питомца!");
@@ -90,7 +90,7 @@ public class Pet : Entity<PetId>
             dateOfBirth, 
             isVaccinated, 
             helpStatus, 
-            requisitesDetails);
+            requisites);
 
         return Result.Success(pet);
     }
