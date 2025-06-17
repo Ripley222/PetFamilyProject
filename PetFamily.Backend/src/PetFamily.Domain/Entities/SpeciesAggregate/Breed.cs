@@ -23,8 +23,8 @@ public class Breed : Entity<BreedId>
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Breed>("Необходимо указать название породы!");
         
-        if (name.Length < Constants.MIN_LENGTH_NAME || name.Length > Constants.MAX_LENGTH_NAME)
-            return Result.Failure<Breed>($"Длина названия породы должна составлять {Constants.MIN_LENGTH_NAME}-{Constants.MAX_LENGTH_NAME} символов!");
+        if (name.Length > Constants.MAX_LENGTH_NAME)
+            return Result.Failure<Breed>($"");
 
         var result = new Breed(breedId, name);
 

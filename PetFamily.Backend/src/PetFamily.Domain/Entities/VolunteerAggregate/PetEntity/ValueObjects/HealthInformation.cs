@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 
@@ -14,16 +15,14 @@ public record HealthInformation
         Value = value;
     }
 
-    public static Result<HealthInformation> Create(string value)
+    public static Result<HealthInformation, Error> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Result.Failure<HealthInformation>("Необходиом указать информация о здоровье питомца!");
+            return Errors.General.ValueIsRequired("HealthInformation");
         
         if (value.Length < MIN_VALUE_LENGTH || value.Length > MAX_VALUE_LENGTH)
-            return Result.Failure<HealthInformation>("Длина информации должна быть 5-1000 символов!");
+            return Errors.General.ValueIsInvalid("HealthInformation");
 
-        var healthInformation = new HealthInformation(value);
-        
-        return Result.Success(healthInformation);
+        return new HealthInformation(value);
     }
 }

@@ -146,6 +146,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
+                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(1000)
                                 .HasColumnType("character varying(1000)")
                                 .HasColumnName("description");
@@ -220,6 +221,7 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
+                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(1000)
                                 .HasColumnType("character varying(1000)")
                                 .HasColumnName("description");
@@ -291,7 +293,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasForeignKey("volunteer_id")
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
-                    b.OwnsOne("PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects.RequisitesList", "RequisitesDetails", b1 =>
+                    b.OwnsOne("PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects.RequisitesList", "RequisitesDetails", b1 =>
                         {
                             b1.Property<Guid>("PetId")
                                 .HasColumnType("uuid");
@@ -317,19 +319,20 @@ namespace PetFamily.Infrastructure.Migrations
                                         .HasColumnType("integer");
 
                                     b2.Property<string>("AccountNumber")
-                                        .IsRequired()
                                         .HasMaxLength(20)
-                                        .HasColumnType("character varying(20)");
+                                        .HasColumnType("character varying(20)")
+                                        .HasColumnName("account_number");
 
                                     b2.Property<string>("Description")
-                                        .IsRequired()
+                                        .ValueGeneratedOnUpdateSometimes()
                                         .HasMaxLength(1000)
-                                        .HasColumnType("character varying(1000)");
+                                        .HasColumnType("character varying(1000)")
+                                        .HasColumnName("description");
 
                                     b2.Property<string>("Title")
-                                        .IsRequired()
                                         .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
+                                        .HasColumnType("character varying(100)")
+                                        .HasColumnName("title");
 
                                     b2.HasKey("RequisitesListPetId", "__synthesizedOrdinal")
                                         .HasName("pk_pets");
@@ -367,7 +370,8 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasConstraintName("fk_pets_pets_id");
                         });
 
-                    b.Navigation("RequisitesDetails");
+                    b.Navigation("RequisitesDetails")
+                        .IsRequired();
 
                     b.Navigation("SpeciesBreed")
                         .IsRequired();
@@ -401,14 +405,15 @@ namespace PetFamily.Infrastructure.Migrations
                                         .HasColumnType("integer");
 
                                     b2.Property<string>("Link")
-                                        .IsRequired()
                                         .HasMaxLength(200)
-                                        .HasColumnType("character varying(200)");
+                                        .HasColumnType("character varying(200)")
+                                        .HasColumnName("link");
 
                                     b2.Property<string>("Title")
-                                        .IsRequired()
+                                        .ValueGeneratedOnUpdateSometimes()
                                         .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
+                                        .HasColumnType("character varying(100)")
+                                        .HasColumnName("title");
 
                                     b2.HasKey("SocialNetworksListVolunteerId", "__synthesizedOrdinal")
                                         .HasName("pk_volunteers");
@@ -423,7 +428,7 @@ namespace PetFamily.Infrastructure.Migrations
                             b1.Navigation("SocialNetworks");
                         });
 
-                    b.OwnsOne("PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects.RequisitesList", "RequisitesDetails", b1 =>
+                    b.OwnsOne("PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects.RequisitesList", "RequisitesDetails", b1 =>
                         {
                             b1.Property<Guid>("VolunteerId")
                                 .HasColumnType("uuid")
@@ -449,19 +454,21 @@ namespace PetFamily.Infrastructure.Migrations
                                         .HasColumnType("integer");
 
                                     b2.Property<string>("AccountNumber")
-                                        .IsRequired()
                                         .HasMaxLength(20)
-                                        .HasColumnType("character varying(20)");
+                                        .HasColumnType("character varying(20)")
+                                        .HasColumnName("account_number");
 
                                     b2.Property<string>("Description")
-                                        .IsRequired()
+                                        .ValueGeneratedOnUpdateSometimes()
                                         .HasMaxLength(1000)
-                                        .HasColumnType("character varying(1000)");
+                                        .HasColumnType("character varying(1000)")
+                                        .HasColumnName("description");
 
                                     b2.Property<string>("Title")
-                                        .IsRequired()
+                                        .ValueGeneratedOnUpdateSometimes()
                                         .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
+                                        .HasColumnType("character varying(100)")
+                                        .HasColumnName("title");
 
                                     b2.HasKey("RequisitesListVolunteerId", "__synthesizedOrdinal")
                                         .HasName("pk_volunteers");
@@ -476,9 +483,11 @@ namespace PetFamily.Infrastructure.Migrations
                             b1.Navigation("Requisites");
                         });
 
-                    b.Navigation("RequisitesDetails");
+                    b.Navigation("RequisitesDetails")
+                        .IsRequired();
 
-                    b.Navigation("SocialNetworksDetails");
+                    b.Navigation("SocialNetworksDetails")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PetFamily.Domain.Entities.SpeciesAggregate.Species", b =>

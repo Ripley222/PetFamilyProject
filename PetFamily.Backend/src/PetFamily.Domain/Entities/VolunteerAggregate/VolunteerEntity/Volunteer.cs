@@ -2,6 +2,7 @@
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
 {
@@ -20,13 +21,17 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             EmailAddress emailAddress,
             Description description,
             int yearsOfExperience,
-            PhoneNumber phoneNumber)  : base(id)
+            PhoneNumber phoneNumber,
+            RequisitesList requisitesDetails,
+            SocialNetworksList socialNetworksDetails)  : base(id)
         {
             FullName = fullName;
             EmailAddress = emailAddress;
             Description = description;
             YearsOfExperience = yearsOfExperience;
             PhoneNumber = phoneNumber;
+            RequisitesDetails = requisitesDetails;
+            SocialNetworksDetails = socialNetworksDetails;
         }
 
         public FullName FullName { get; private set; }
@@ -34,25 +39,35 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
         public Description Description { get; private set; }
         public int YearsOfExperience { get; private set; }        
         public PhoneNumber PhoneNumber { get; private set; }
-        public RequisitesList? RequisitesDetails { get; private set; }
-        public SocialNetworksList? SocialNetworksDetails { get; private set; }
-        
+        public RequisitesList RequisitesDetails { get; private set; }
+        public SocialNetworksList SocialNetworksDetails { get; private set; }
         public IReadOnlyList<Pet> Pets => _pets;
         public int GetNumberOfAnimalsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
         public int GetNumberOfAnimalsLookingHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingHome);
         public int GetNumberOfAnimalsNeedsHelp() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
 
-        public static Result<Volunteer> Create(
+        public static Result<Volunteer, Error> Create(
             VolunteerId volunteerId,
             FullName fullName,
             EmailAddress emailAddress,
             Description description,
             int yearsOfExperience,
-            PhoneNumber phoneNumber)
+            PhoneNumber phoneNumber,
+            RequisitesList requisitesDetails,
+            SocialNetworksList socialNetworksDetails)
         {
-            var result = new Volunteer(volunteerId, fullName, emailAddress, description, yearsOfExperience, phoneNumber);
-
-            return Result.Success(result);
+            if (yearsOfExperience < 0)
+                return Errors.General.ValueIsInvalid("YearsOfExperience");
+            
+            return new Volunteer(
+                volunteerId, 
+                fullName, 
+                emailAddress, 
+                description, 
+                yearsOfExperience, 
+                phoneNumber,
+                requisitesDetails, 
+                socialNetworksDetails);
         }
 
         public Result AddPet(Pet pet)

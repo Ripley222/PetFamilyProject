@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 {
@@ -19,19 +20,17 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
             Value = value;
         }
 
-        public static Result<HelpStatus> Create(string value)
+        public static Result<HelpStatus, Error> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return Result.Failure<HelpStatus>("Необходимо указать статус помощи животному!");
+                return Errors.General.ValueIsRequired("HelpStatus");
 
             var valueToLower = value.Trim().ToLower();
 
             if (_all.Any(h => h.Value.ToLower() == valueToLower) == false)
-                return Result.Failure<HelpStatus>("Некорректный статус помощи животному!");
+                return Errors.General.ValueIsInvalid("HelpStatus");
 
-            var helpStatus = new HelpStatus(valueToLower);
-
-            return Result.Success(helpStatus);
+            return new HelpStatus(value);
         }
     }
 }

@@ -26,8 +26,8 @@ public class Species : Entity<SpeciesId>
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Species>("Необходимо указать название вида!");
         
-        if (name.Length < Constants.MIN_LENGTH_NAME || name.Length > Constants.MAX_LENGTH_NAME)
-            return Result.Failure<Species>($"Длина названия вида должна составлять {Constants.MIN_LENGTH_NAME}-{Constants.MAX_LENGTH_NAME} символов!");
+        if (name.Length > Constants.MAX_LENGTH_NAME)
+            return Result.Failure<Species>("");
 
         var result = new Species(speciesId, name);
 

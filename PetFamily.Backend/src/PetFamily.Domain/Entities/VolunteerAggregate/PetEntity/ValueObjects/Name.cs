@@ -12,16 +12,14 @@ public record Name
         Value = value;
     }
 
-    public static Result<Name> Create(string value)
+    public static Result<Name, Error> Create(string value)
     {
         if (string.IsNullOrEmpty(value))
-            return Result.Failure<Name>("Необходимо указать имя питомца!");
+            return Errors.General.ValueIsRequired("PetName");
         
-        if (value.Length < Constants.MIN_LENGTH_NAME || value.Length > Constants.MAX_LENGTH_NAME)
-            return Result.Failure<Name>("Имя питомца должно состоять из 2-100 символов!");
+        if (value.Length > Constants.MAX_LENGTH_NAME)
+            return Errors.General.ValueIsInvalid("PetName");
 
-        var name = new Name(value);
-        
-        return Result.Success(name);
+        return new Name(value);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 {
@@ -16,20 +17,18 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
             Value = value;
         }
 
-        public static Result<PhoneNumber> Create(string value)
+        public static Result<PhoneNumber, Error> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return Result.Failure<PhoneNumber>("Телефон не заполнен либо есть лишние пробелы!");
+                return Errors.General.ValueIsRequired("PhoneNumber");
 
             if (Regex.IsMatch(value, PHONE_REGEX) == false)
-                return Result.Failure<PhoneNumber>("Неверный формат номера телефона!");
+                return Errors.General.ValueIsInvalid("PhoneNumber");
 
             if (value.Length > MAX_VALUE_LENGTH)
-                return Result.Failure<PhoneNumber>($"Максимальная длина номера телефона - {MAX_VALUE_LENGTH} символов!");
+                return Errors.General.ValueIsInvalid("PhoneNumber");
 
-            var phoneNumber = new PhoneNumber(value);
-
-            return Result.Success(phoneNumber);
+            return new PhoneNumber(value);
         }
     }
 }
