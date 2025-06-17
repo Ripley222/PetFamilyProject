@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Application.Volunteers.Commands;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -16,11 +17,11 @@ public class CreateVolunteerHandler
     }
     
     public async Task<Result<Guid, Error>> Handler(
-        CreateVolunteerRequest request, CancellationToken cancellationToken = default)
+        CreateVolunteerCommand command, CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.New();
         
-        var fullNameResult = FullName.Create(request.FirstName, request.MiddleName, request.LastName);
+        var fullNameResult = FullName.Create(command.FirstName, command.MiddleName, command.LastName);
         if (fullNameResult.IsFailure)
             return fullNameResult.Error;
 
@@ -29,31 +30,31 @@ public class CreateVolunteerHandler
         if (existingVolunteer.IsSuccess)
             return Errors.Volunteer.AlreadyExist();
         
-        var emailAddressResult = EmailAddress.Create(request.EmailAddress);
+        var emailAddressResult = EmailAddress.Create(command.EmailAddress);
         if (emailAddressResult.IsFailure)
             return emailAddressResult.Error;
         
-        var descriptionResult = Description.Create(request.Description);
+        var descriptionResult = Description.Create(command.Description);
         if (descriptionResult.IsFailure)
             return descriptionResult.Error;
         
-        var yearsOfExperience = request.YearsOfExperience;
+        var yearsOfExperience = command.YearsOfExperience;
         
-        var phoneNumberResult = PhoneNumber.Create(request.PhoneNumber);
+        var phoneNumberResult = PhoneNumber.Create(command.PhoneNumber);
         if (phoneNumberResult.IsFailure)
             return phoneNumberResult.Error;
 
-        var requisites = request.Requisites
+        var requisites = command.Requisites
             .Select(dto => Requisites.Create(dto.AccountNumber, dto.Title, dto.Description).Value)
             .ToList();
+
+        var requisitesList = new RequisitesList(requisites);
         
-        var requisitesList = RequisitesList.Create(requisites);
-        
-        var socialNetworks = request.SocialNetworks
+        var socialNetworks = command.SocialNetworks
             .Select(dto => SocialNetwork.Create(dto.Title, dto.Link).Value)
             .ToList();
-        
-        var socialNetworksList = SocialNetworksList.Create(socialNetworks);
+
+        var socialNetworksList = new SocialNetworksList(socialNetworks);
         
         var newVolunteer = Volunteer.Create(
             volunteerId, 

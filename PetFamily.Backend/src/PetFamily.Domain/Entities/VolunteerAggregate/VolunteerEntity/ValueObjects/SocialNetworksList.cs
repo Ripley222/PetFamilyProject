@@ -1,21 +1,18 @@
-﻿namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
+﻿using System.Text.Json.Serialization;
+
+namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 
 public record SocialNetworksList
 {
-    public IEnumerable<SocialNetwork> SocialNetworks { get; }
+    public List<SocialNetwork> SocialNetworks { get; } = [];
 
-    //ef core ctor
+    [JsonConstructor]
     public SocialNetworksList()
     {
     }
     
-    private SocialNetworksList(IEnumerable<SocialNetwork> socialNetworks)
+    public SocialNetworksList(List<SocialNetwork> socialNetworks)
     {
         SocialNetworks =  socialNetworks;
-    }
-
-    public static SocialNetworksList Create(IEnumerable<SocialNetwork> socialNetworks)
-    {
-        return new SocialNetworksList(socialNetworks);
     }
 }

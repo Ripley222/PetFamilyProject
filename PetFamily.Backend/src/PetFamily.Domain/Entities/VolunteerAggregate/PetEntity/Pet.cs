@@ -76,8 +76,21 @@ public class Pet : Entity<PetId>
         if (string.IsNullOrEmpty(color))
             return Result.Failure<Pet>("Необходимо указать цвет питомца!");
         
-        var pet = new Pet(petId, name, speciesBreed, description, color, healthInformation, address,
-            bodySize, phoneNumber, isNeutered, dateOfBirth, isVaccinated, helpStatus, requisitesDetails);
+        var pet = new Pet(
+            petId, 
+            name, 
+            speciesBreed, 
+            description, 
+            color, 
+            healthInformation, 
+            address,
+            bodySize, 
+            phoneNumber, 
+            isNeutered, 
+            dateOfBirth, 
+            isVaccinated, 
+            helpStatus, 
+            requisitesDetails);
 
         return Result.Success(pet);
     }

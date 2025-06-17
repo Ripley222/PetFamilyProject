@@ -1,21 +1,18 @@
-﻿namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+﻿using System.Text.Json.Serialization;
+
+namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 
 public record RequisitesList
 {
-    public IEnumerable<Requisites> Requisites { get; }
+    public List<Requisites> Requisites { get; } = [];
 
-    //ef core ctor
+    [JsonConstructor]
     public RequisitesList()
     {
     }
-
-    private RequisitesList(IEnumerable<Requisites> requisites)
+    
+    public RequisitesList(List<Requisites> requisites)
     {
         Requisites = requisites;
-    }
-
-    public static RequisitesList Create(IEnumerable<Requisites> requisites)
-    {
-        return new RequisitesList(requisites);
     }
 }

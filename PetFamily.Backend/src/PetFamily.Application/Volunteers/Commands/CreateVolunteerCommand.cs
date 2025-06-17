@@ -1,8 +1,8 @@
-﻿using PetFamily.Domain.Entities.VolunteerAggregate.DTO;
+﻿using PetFamily.Application.Volunteers.DTO;
 
-namespace PetFamily.Application.Volunteers.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Commands;
 
-public record CreateVolunteerRequest(
+public record CreateVolunteerCommand(
     string FirstName, 
     string MiddleName,
     string LastName, 

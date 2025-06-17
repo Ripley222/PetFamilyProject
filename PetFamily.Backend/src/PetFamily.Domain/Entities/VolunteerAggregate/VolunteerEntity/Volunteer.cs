@@ -41,7 +41,6 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
         public PhoneNumber PhoneNumber { get; private set; }
         public RequisitesList RequisitesDetails { get; private set; }
         public SocialNetworksList SocialNetworksDetails { get; private set; }
-        
         public IReadOnlyList<Pet> Pets => _pets;
         public int GetNumberOfAnimalsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
         public int GetNumberOfAnimalsLookingHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingHome);
@@ -61,7 +60,14 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
                 return Errors.General.ValueIsInvalid("YearsOfExperience");
             
             return new Volunteer(
-                volunteerId, fullName, emailAddress, description, yearsOfExperience, phoneNumber, requisitesDetails, socialNetworksDetails);
+                volunteerId, 
+                fullName, 
+                emailAddress, 
+                description, 
+                yearsOfExperience, 
+                phoneNumber,
+                requisitesDetails, 
+                socialNetworksDetails);
         }
 
         public Result AddPet(Pet pet)

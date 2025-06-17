@@ -1,4 +1,4 @@
-﻿namespace PetFamily.Domain.Entities.VolunteerAggregate.DTO;
+﻿namespace PetFamily.Application.Volunteers.DTO;
 
 public record SocialNetworksDto
 {
