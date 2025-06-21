@@ -2,7 +2,6 @@
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests.CreateVolunteer;
 using PetFamily.API.Response;
-using PetFamily.Application.Volunteers.Commands;
 using PetFamily.Application.Volunteers.CreateVolunteer;
 
 namespace PetFamily.API.Controllers;

@@ -8,6 +8,9 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
 {
     public class Volunteer : Entity<VolunteerId>
     {
+        public const int MIN_EXPERIENCE = 0;
+        public const int MAX_EXPERIENCE = 50;
+        
         private readonly List<Pet> _pets = [];
 
         //ef core ctor
@@ -56,9 +59,6 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             List<Requisite> requisites,
             List<SocialNetwork> socials)
         {
-            if (yearsOfExperience < 0)
-                return Errors.General.ValueIsInvalid("YearsOfExperience");
-            
             return new Volunteer(
                 volunteerId, 
                 fullName, 
