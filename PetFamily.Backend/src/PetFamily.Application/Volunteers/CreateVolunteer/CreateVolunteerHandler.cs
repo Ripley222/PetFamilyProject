@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using PetFamily.Application.Volunteers.Commands;
+using FluentValidation;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -7,43 +7,36 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
-public class CreateVolunteerHandler
+public class CreateVolunteerHandler(
+    IVolunteersRepository volunteersRepository, 
+    IValidator<CreateVolunteerCommand> validator)
 {
-    private readonly IVolunteersRepository _volunteersRepository;
-
-    public CreateVolunteerHandler(IVolunteersRepository volunteersRepository)
-    {
-        _volunteersRepository = volunteersRepository;
-    }
-    
     public async Task<Result<Guid, Error>> Handler(
         CreateVolunteerCommand command, CancellationToken cancellationToken = default)
     {
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+
+        if (validationResult.IsValid == false)
+        {
+            return Error.Validation(
+                validationResult.Errors.First().ErrorCode,
+                validationResult.Errors.First().ErrorMessage);
+        }
+
         var volunteerId = VolunteerId.New();
         
-        var fullNameResult = FullName.Create(command.FirstName, command.MiddleName, command.LastName);
-        if (fullNameResult.IsFailure)
-            return fullNameResult.Error;
+        var fullNameResult = FullName.Create(command.FirstName, command.MiddleName, command.LastName).Value;
 
-        var existingVolunteer = await _volunteersRepository.GetByFullName(fullNameResult.Value, cancellationToken);
+        var existingVolunteer = await volunteersRepository.GetByFullName(fullNameResult, cancellationToken);
 
         if (existingVolunteer.IsSuccess)
             return Errors.Volunteer.AlreadyExist();
         
-        var emailAddressResult = EmailAddress.Create(command.EmailAddress);
-        if (emailAddressResult.IsFailure)
-            return emailAddressResult.Error;
-        
-        var descriptionResult = Description.Create(command.Description);
-        if (descriptionResult.IsFailure)
-            return descriptionResult.Error;
-        
+        var emailAddressResult = EmailAddress.Create(command.EmailAddress).Value;
+        var descriptionResult = Description.Create(command.Description).Value;
         var yearsOfExperience = command.YearsOfExperience;
+        var phoneNumberResult = PhoneNumber.Create(command.PhoneNumber).Value;
         
-        var phoneNumberResult = PhoneNumber.Create(command.PhoneNumber);
-        if (phoneNumberResult.IsFailure)
-            return phoneNumberResult.Error;
-
         var requisites = command.Requisites
             .Select(dto => Requisite.Create(dto.AccountNumber, dto.Title, dto.Description).Value)
             .ToList();
@@ -54,18 +47,18 @@ public class CreateVolunteerHandler
         
         var newVolunteer = Volunteer.Create(
             volunteerId, 
-            fullNameResult.Value, 
-            emailAddressResult.Value, 
-            descriptionResult.Value, 
+            fullNameResult, 
+            emailAddressResult, 
+            descriptionResult, 
             yearsOfExperience, 
-            phoneNumberResult.Value,
+            phoneNumberResult,
             requisites,
             socialNetworks);
         
         if (newVolunteer.IsFailure)
             return newVolunteer.Error;
 
-        await _volunteersRepository.Add(newVolunteer.Value, cancellationToken);
+        await volunteersRepository.Add(newVolunteer.Value, cancellationToken);
 
         return newVolunteer.Value.Id.Value;
     }
