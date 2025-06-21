@@ -18,13 +18,11 @@ public class CreateVolunteerHandler(
 
         if (validationResult.IsValid == false)
         {
-            foreach (var validationError in validationResult.Errors)
-            {
-                var error = Error.Validation(validationError.ErrorCode, validationError.ErrorMessage);
-                return error;
-            }
+            return Error.Validation(
+                validationResult.Errors.First().ErrorCode,
+                validationResult.Errors.First().ErrorMessage);
         }
-        
+
         var volunteerId = VolunteerId.New();
         
         var fullNameResult = FullName.Create(command.FirstName, command.MiddleName, command.LastName).Value;
