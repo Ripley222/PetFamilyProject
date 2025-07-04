@@ -38,7 +38,9 @@ public class VolunteersRepository : IVolunteersRepository
 
     public async Task<Result<Volunteer, Error>> GetByFullName(FullName fullName, CancellationToken cancellationToken = default)
     {
-        var volunteer = await _dbContext.Volunteers.FirstOrDefaultAsync(v => v.FullName == fullName, cancellationToken);
+        var volunteer = await _dbContext.Volunteers
+            .Include(v => v.Pets)
+            .FirstOrDefaultAsync(v => v.FullName == fullName, cancellationToken);
 
         if (volunteer is null)
             return Errors.Volunteer.NotFound();

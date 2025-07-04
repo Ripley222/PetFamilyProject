@@ -21,8 +21,18 @@ public static class CustomValidators
             context.AddFailure(new ValidationFailure
             {
                 ErrorMessage = result.Error.Message,
-                ErrorCode = result.Error.Code
+                ErrorCode = result.Error.Code,
+                PropertyName = result.Error.InvalidField
             });
         });
+    }
+    
+    public static IRuleBuilderOptions<T, TElement> WithError<T, TElement>(
+        this IRuleBuilderOptions<T, TElement> rule,
+        Error error)
+    {
+        return rule
+            .WithErrorCode(error.Code)
+            .WithMessage(error.Message);
     }
 }

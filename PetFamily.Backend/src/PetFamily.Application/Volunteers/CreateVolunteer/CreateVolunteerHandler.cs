@@ -11,26 +11,33 @@ public class CreateVolunteerHandler(
     IVolunteersRepository volunteersRepository, 
     IValidator<CreateVolunteerCommand> validator)
 {
-    public async Task<Result<Guid, Error>> Handler(
-        CreateVolunteerCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid, ErrorList>> Handler(
+        CreateVolunteerCommand command, 
+        CancellationToken cancellationToken = default)
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
 
         if (validationResult.IsValid == false)
         {
-            return Error.Validation(
-                validationResult.Errors.First().ErrorCode,
-                validationResult.Errors.First().ErrorMessage);
+            var validationErrors = validationResult.Errors;
+            
+            var errors = validationErrors.Select(validationError
+                => Error.Validation(
+                    validationError.ErrorCode, 
+                    validationError.ErrorMessage, 
+                    validationError.PropertyName));
+
+            return new ErrorList(errors);
         }
 
         var volunteerId = VolunteerId.New();
-        
         var fullNameResult = FullName.Create(command.FirstName, command.MiddleName, command.LastName).Value;
 
-        var existingVolunteer = await volunteersRepository.GetByFullName(fullNameResult, cancellationToken);
+        var existingVolunteer = await volunteersRepository
+            .GetByFullName(fullNameResult, cancellationToken);
 
         if (existingVolunteer.IsSuccess)
-            return Errors.Volunteer.AlreadyExist();
+            return Errors.Volunteer.AlreadyExist().ToErrorList();
         
         var emailAddressResult = EmailAddress.Create(command.EmailAddress).Value;
         var descriptionResult = Description.Create(command.Description).Value;
@@ -56,7 +63,7 @@ public class CreateVolunteerHandler(
             socialNetworks);
         
         if (newVolunteer.IsFailure)
-            return newVolunteer.Error;
+            return newVolunteer.Error.ToErrorList();
 
         await volunteersRepository.Add(newVolunteer.Value, cancellationToken);
 
