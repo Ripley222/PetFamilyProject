@@ -21,8 +21,9 @@ public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteer
 
         RuleFor(c => c.YearsOfExperience)
             .InclusiveBetween(Volunteer.MIN_EXPERIENCE, Volunteer.MAX_EXPERIENCE)
-            .WithErrorCode(Errors.General.ValueIsInvalid("YearsOfExperience").Code)
-            .WithMessage(Errors.General.ValueIsInvalid("YearsOfExperience").Message);
+            .WithError(Error.Validation(
+                Errors.General.ValueIsInvalid("YearsOfExperience").Code,
+                Errors.General.ValueIsInvalid("YearsOfExperience").Message));
 
         RuleFor(c => c.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
 

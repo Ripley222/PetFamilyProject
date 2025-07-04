@@ -9,7 +9,7 @@ public static class Inject
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<CreateVolunteerHandler>();
-        services.AddScoped<IValidator<CreateVolunteerCommand>, CreateVolunteerCommandValidator>();
+        services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;
     }
