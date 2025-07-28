@@ -1,4 +1,4 @@
-﻿namespace PetFamily.Application.Volunteers.DTO;
+﻿namespace PetFamily.Application.Volunteers.DTOs;
 
 public record RequisitesDto
 {
