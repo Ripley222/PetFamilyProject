@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using PetFamily.Application.Validation;
-using PetFamily.Application.Volunteers.DTO.DTOValidation;
+using PetFamily.Application.Volunteers.DTOs.DTOsValidation;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;

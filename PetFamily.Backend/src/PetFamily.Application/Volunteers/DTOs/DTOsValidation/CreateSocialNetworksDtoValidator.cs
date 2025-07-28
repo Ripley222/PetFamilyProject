@@ -2,7 +2,7 @@
 using PetFamily.Application.Validation;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 
-namespace PetFamily.Application.Volunteers.DTO.DTOValidation;
+namespace PetFamily.Application.Volunteers.DTOs.DTOsValidation;
 
 public class CreateSocialNetworksDtoValidator : AbstractValidator<SocialNetworksDto>
 {

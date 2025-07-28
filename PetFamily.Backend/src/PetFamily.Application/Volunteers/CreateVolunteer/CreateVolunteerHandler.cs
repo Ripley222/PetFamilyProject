@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -9,10 +10,11 @@ namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public class CreateVolunteerHandler(
     IVolunteersRepository volunteersRepository, 
-    IValidator<CreateVolunteerCommand> validator)
+    IValidator<CreateVolunteerCommand> validator,
+    ILogger<CreateVolunteerHandler> logger)
 {
     public async Task<Result<Guid, ErrorList>> Handler(
-        CreateVolunteerCommand command, 
+        CreateVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
@@ -31,18 +33,18 @@ public class CreateVolunteerHandler(
         }
 
         var volunteerId = VolunteerId.New();
-        var fullNameResult = FullName.Create(command.FirstName, command.MiddleName, command.LastName).Value;
+        var fullName = FullName.Create(command.FirstName, command.MiddleName, command.LastName).Value;
 
         var existingVolunteer = await volunteersRepository
-            .GetByFullName(fullNameResult, cancellationToken);
+            .GetByFullName(fullName, cancellationToken);
 
         if (existingVolunteer.IsSuccess)
             return Errors.Volunteer.AlreadyExist().ToErrorList();
         
-        var emailAddressResult = EmailAddress.Create(command.EmailAddress).Value;
-        var descriptionResult = Description.Create(command.Description).Value;
+        var emailAddress = EmailAddress.Create(command.EmailAddress).Value;
+        var description = Description.Create(command.Description).Value;
         var yearsOfExperience = command.YearsOfExperience;
-        var phoneNumberResult = PhoneNumber.Create(command.PhoneNumber).Value;
+        var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
         
         var requisites = command.Requisites
             .Select(dto => Requisite.Create(dto.AccountNumber, dto.Title, dto.Description).Value)
@@ -54,11 +56,11 @@ public class CreateVolunteerHandler(
         
         var newVolunteer = Volunteer.Create(
             volunteerId, 
-            fullNameResult, 
-            emailAddressResult, 
-            descriptionResult, 
+            fullName, 
+            emailAddress, 
+            description, 
             yearsOfExperience, 
-            phoneNumberResult,
+            phoneNumber,
             requisites,
             socialNetworks);
         
@@ -67,6 +69,8 @@ public class CreateVolunteerHandler(
 
         await volunteersRepository.Add(newVolunteer.Value, cancellationToken);
 
+        logger.LogInformation("Created volunteer with id {volunteerId}", volunteerId);
+        
         return newVolunteer.Value.Id.Value;
     }
 }

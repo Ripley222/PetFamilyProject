@@ -19,7 +19,7 @@ public static class Errors
           public static Error ValueIsRequired(string? name = null)
           {
                var label = name == null ? "value " : $"{name} ";
-               return Error.Validation("value.is.required", $"{label}is required");
+               return Error.Validation("value.is.required", $"{label}is required", name);
           } 
      }
 
