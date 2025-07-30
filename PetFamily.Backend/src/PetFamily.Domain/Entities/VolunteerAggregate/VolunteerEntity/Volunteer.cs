@@ -70,6 +70,30 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
                 socials);
         }
 
+        public void UpdateMainInfo(
+            FullName fullName,
+            EmailAddress emailAddress,
+            Description description,
+            int yearsOfExperience,
+            PhoneNumber phoneNumber)
+        {
+            FullName = fullName;
+            EmailAddress = emailAddress;
+            Description = description;
+            YearsOfExperience = yearsOfExperience;
+            PhoneNumber = phoneNumber;
+        }
+
+        public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socials)
+        {
+            Socials = socials.ToList();
+        }
+        
+        public void UpdateRequisites(IEnumerable<Requisite> requisites)
+        {
+            Requisites = requisites.ToList();
+        }
+
         public Result AddPet(Pet pet)
         {
             if (_pets.Contains(pet))

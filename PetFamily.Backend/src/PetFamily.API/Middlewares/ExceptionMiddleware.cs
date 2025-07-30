@@ -18,7 +18,7 @@ public class ExceptionMiddleware
     {
         try
         { 
-            await _next(context); //вызов всего приложения
+            await _next(context); //вызов следующего middleware
         }
         catch (Exception ex)
         {
