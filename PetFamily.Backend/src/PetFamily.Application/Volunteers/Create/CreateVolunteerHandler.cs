@@ -1,19 +1,20 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Application.Volunteers.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Create;
 
 public class CreateVolunteerHandler(
-    IVolunteersRepository volunteersRepository, 
+    IVolunteersRepository repository, 
     IValidator<CreateVolunteerCommand> validator,
     ILogger<CreateVolunteerHandler> logger)
 {
-    public async Task<Result<Guid, ErrorList>> Handler(
+    public async Task<Result<Guid, ErrorList>> Handle(
         CreateVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,23 +22,13 @@ public class CreateVolunteerHandler(
 
         if (validationResult.IsValid == false)
         {
-            var validationErrors = validationResult.Errors;
-            
-            var errors = validationErrors.Select(validationError
-                => Error.Validation(
-                    validationError.ErrorCode, 
-                    validationError.ErrorMessage, 
-                    validationError.PropertyName));
-
-            return new ErrorList(errors);
+            return validationResult.GetErrors();
         }
 
         var volunteerId = VolunteerId.New();
         var fullName = FullName.Create(command.FirstName, command.MiddleName, command.LastName).Value;
 
-        var existingVolunteer = await volunteersRepository
-            .GetByFullName(fullName, cancellationToken);
-
+        var existingVolunteer = await repository.GetByFullName(fullName, cancellationToken);
         if (existingVolunteer.IsSuccess)
             return Errors.Volunteer.AlreadyExist().ToErrorList();
         
@@ -67,7 +58,7 @@ public class CreateVolunteerHandler(
         if (newVolunteer.IsFailure)
             return newVolunteer.Error.ToErrorList();
 
-        await volunteersRepository.Add(newVolunteer.Value, cancellationToken);
+        await repository.Add(newVolunteer.Value, cancellationToken);
 
         logger.LogInformation("Created volunteer with id {volunteerId}", volunteerId);
         

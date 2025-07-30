@@ -1,8 +1,8 @@
 ﻿using PetFamily.Application.Volunteers.DTOs;
 
-namespace PetFamily.API.Requests.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Create;
 
-public record CreateVolunteerRequest(
+public record CreateVolunteerCommand(
     string FirstName, 
     string MiddleName,
     string LastName, 
