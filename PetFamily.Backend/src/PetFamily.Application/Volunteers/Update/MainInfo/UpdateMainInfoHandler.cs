@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -20,15 +21,7 @@ public class UpdateMainInfoHandler(
 
         if (validationResult.IsValid == false)
         {
-            var validationErrors = validationResult.Errors;
-
-            var errors = validationErrors.Select(validationError
-                => Error.Validation(
-                    validationError.ErrorCode,
-                    validationError.ErrorMessage,
-                    validationError.PropertyName));
-
-            return new ErrorList(errors);
+            return validationResult.GetErrors();
         }
 
         var resultVolunteer = await repository.GetById(VolunteerId.Create(command.VolunteerId), cancellationToken);

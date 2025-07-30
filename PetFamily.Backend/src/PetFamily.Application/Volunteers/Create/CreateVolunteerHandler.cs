@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -21,15 +22,7 @@ public class CreateVolunteerHandler(
 
         if (validationResult.IsValid == false)
         {
-            var validationErrors = validationResult.Errors;
-            
-            var errors = validationErrors.Select(validationError
-                => Error.Validation(
-                    validationError.ErrorCode, 
-                    validationError.ErrorMessage, 
-                    validationError.PropertyName));
-
-            return new ErrorList(errors);
+            return validationResult.GetErrors();
         }
 
         var volunteerId = VolunteerId.New();
