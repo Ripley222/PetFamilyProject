@@ -1,10 +1,12 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests.Volunteer.Create;
 using PetFamily.API.Requests.Volunteer.Update;
 using PetFamily.API.Response;
 using PetFamily.Application.Volunteers.Create;
+using PetFamily.Application.Volunteers.Delete;
+using PetFamily.Application.Volunteers.Delete.HardDelete;
+using PetFamily.Application.Volunteers.Delete.SoftDelete;
 using PetFamily.Application.Volunteers.Update.MainInfo;
 using PetFamily.Application.Volunteers.Update.Requisites;
 using PetFamily.Application.Volunteers.Update.SocialNetworks;
@@ -33,7 +35,6 @@ public class VolunteersController : ControllerBase
             request.SocialNetworks);
 
         var result = await handler.Handle(command, cancellationToken);
-
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -60,7 +61,6 @@ public class VolunteersController : ControllerBase
             request.PhoneNumber);
 
         var result = await handler.Handle(command, cancellationToken);
-
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -79,7 +79,6 @@ public class VolunteersController : ControllerBase
         var command = new UpdateSocialNetworksCommand(id, request.SocialNetworks);
 
         var result = await handler.Handle(command, cancellationToken);
-
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -98,7 +97,40 @@ public class VolunteersController : ControllerBase
         var command = new UpdateRequisitesCommand(id, request.Requisites);
 
         var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
 
+        var envelope = Envelope.Ok(result.Value);
+        
+        return Ok(envelope);
+    }
+    
+    [HttpDelete("{id:guid}/soft-delete")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromRoute] Guid id,
+        [FromServices] SoftDeleteVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteVolunteerCommand(id);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        var envelope = Envelope.Ok(result.Value);
+        
+        return Ok(envelope);
+    }
+    
+    [HttpDelete("{id:guid}/hard-delete")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromRoute] Guid id,
+        [FromServices] HardDeleteVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteVolunteerCommand(id);
+        
+        var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 

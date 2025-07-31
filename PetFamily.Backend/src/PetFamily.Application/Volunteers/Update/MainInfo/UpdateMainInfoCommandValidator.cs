@@ -11,24 +11,24 @@ public class UpdateMainInfoCommandValidator : AbstractValidator<UpdateMainInfoCo
 {
     public UpdateMainInfoCommandValidator()
     {
-        RuleFor(x => x.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(u => u.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
         
-        RuleFor(x => new { x.FirstName, x.MiddleName, x.LastName })
+        RuleFor(u => new { u.FirstName, u.MiddleName, u.LastName })
             .MustBeValueObject(f 
                 => FullName.Create(f.FirstName, f.MiddleName, f.LastName));
         
-        RuleFor(c => c.EmailAddress).MustBeValueObject(EmailAddress.Create);
+        RuleFor(u => u.EmailAddress).MustBeValueObject(EmailAddress.Create);
 
-        RuleFor(x => x.Description)
+        RuleFor(u => u.Description)
             .MustBeValueObject(Description.Create);
 
-        RuleFor(x => x.YearsOfExperience)
+        RuleFor(u => u.YearsOfExperience)
             .InclusiveBetween(Volunteer.MIN_EXPERIENCE, Volunteer.MAX_EXPERIENCE)
             .WithError(Error.Validation(
                 Errors.General.ValueIsInvalid("YearsOfExperience").Code,
                 Errors.General.ValueIsInvalid("YearsOfExperience").Message));
         
-        RuleFor(x => x.PhoneNumber)
+        RuleFor(u => u.PhoneNumber)
             .MustBeValueObject(PhoneNumber.Create);
     }
 }

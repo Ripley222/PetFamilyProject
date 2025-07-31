@@ -10,6 +10,8 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
     {
         public const int MIN_EXPERIENCE = 0;
         public const int MAX_EXPERIENCE = 50;
+
+        private bool _isDeleted = false;
         
         private readonly List<Pet> _pets = [];
 
@@ -92,6 +94,26 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
         public void UpdateRequisites(IEnumerable<Requisite> requisites)
         {
             Requisites = requisites.ToList();
+        }
+
+        public void Delete()
+        {
+            _isDeleted = true;
+
+            foreach (var pet in _pets)
+            {
+                pet.Delete();
+            }
+        }
+        
+        public void Restore()
+        {
+            _isDeleted = false;
+            
+            foreach (var pet in _pets)
+            {
+                pet.Restore();
+            }
         }
 
         public Result AddPet(Pet pet)

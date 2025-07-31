@@ -9,11 +9,11 @@ public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSoci
 {
     public UpdateSocialNetworksCommandValidator()
     {
-        RuleFor(x => x.VolunteerId)
+        RuleFor(u => u.VolunteerId)
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired());
 
-        RuleForEach(x => x.SocialNetworks)
+        RuleForEach(u => u.SocialNetworks)
             .SetValidator(new CreateSocialNetworksDtoValidator());
     }
 }

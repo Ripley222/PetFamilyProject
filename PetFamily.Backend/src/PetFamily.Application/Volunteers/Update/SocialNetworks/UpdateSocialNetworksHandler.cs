@@ -33,7 +33,7 @@ public class UpdateSocialNetworksHandler(
 
         var result = await repository.Save(resultVolunteer.Value, cancellationToken);
         
-        logger.LogInformation("Updates social networks volunteer with id {volunteerId}", resultVolunteer.Value.Id);
+        logger.LogInformation("Updates social networks volunteer with id {volunteerId}", command.VolunteerId);
 
         return result;
     }

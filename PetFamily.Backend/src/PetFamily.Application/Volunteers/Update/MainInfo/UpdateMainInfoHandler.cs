@@ -43,7 +43,7 @@ public class UpdateMainInfoHandler(
 
         var result = await repository.Save(resultVolunteer.Value, cancellationToken);
         
-        logger.LogInformation("Updates main info volunteer with id {volunteerId}", resultVolunteer.Value.Id);
+        logger.LogInformation("Updates main info volunteer with id {volunteerId}", command.VolunteerId);
         
         return result;
     }
