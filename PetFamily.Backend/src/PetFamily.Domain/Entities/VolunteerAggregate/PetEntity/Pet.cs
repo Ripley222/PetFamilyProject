@@ -5,6 +5,8 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 
 public class Pet : Entity<PetId>
 {
+    private bool _isDeleted = false;
+    
     //ef core ctor
     private Pet(PetId id) : base(id) 
     {
@@ -93,5 +95,15 @@ public class Pet : Entity<PetId>
             requisites);
 
         return Result.Success(pet);
+    }
+
+    public void Delete()
+    {
+        _isDeleted = true;
+    }
+    
+    public void Restore()
+    {
+        _isDeleted = false;
     }
 }

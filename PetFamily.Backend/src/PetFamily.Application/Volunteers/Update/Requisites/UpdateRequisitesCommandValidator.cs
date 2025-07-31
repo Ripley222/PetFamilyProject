@@ -9,9 +9,9 @@ public class UpdateRequisitesCommandValidator : AbstractValidator<UpdateRequisit
 {
     public UpdateRequisitesCommandValidator()
     {
-        RuleFor(x => x.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(u => u.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
         
-        RuleForEach(x => x.Requisites)
+        RuleForEach(u => u.Requisites)
             .SetValidator(new CreateRequisitesDtoValidator());
     }
 }
