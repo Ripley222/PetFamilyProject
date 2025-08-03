@@ -86,6 +86,18 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             PhoneNumber = phoneNumber;
         }
 
+        public Result<Pet> GetPetById(PetId petId)
+        {
+            var result = _pets.Where(p => p.Id == petId);
+            if (result.Count() > 1)
+                return Result.Failure<Pet>("There is more than one pet with this id");
+            
+            if (result.Any() == false)
+                return Result.Failure<Pet>("There is no pet with this id");
+
+            return Result.Success(result.First());
+        }
+
         public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socials)
         {
             Socials = socials.ToList();
@@ -119,10 +131,33 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
         public Result AddPet(Pet pet)
         {
             if (_pets.Contains(pet))
-                return Result.Failure("Указанное животное уже числится за волонтёром!");
+                return Result.Failure("The specified animal is already listed as a volunteer!");
 
+            var position = Position.Create(_pets.Count + 1);
+            if (position.IsFailure)
+                return Result.Failure("Position failure");
+            
+            pet.SetPosition(position.Value);
+            
             _pets.Add(pet);
+            return Result.Success();
+        }
+        
+        public Result MovePet(Pet petToMove, Position newPosition)
+        {
+            if (newPosition.Value > _pets.Count)
+                return Result.Failure("New position is out of range");
+            
+            var orderPets = _pets.OrderBy(p => p.Position.Value).ToList();
+           
+            orderPets.Remove(petToMove);
+            orderPets.Insert(newPosition.Value - 1, petToMove);
 
+            for (int i = 0; i < orderPets.Count; i++)
+            {
+                orderPets[i].SetPosition(Position.Create(i + 1).Value);
+            }
+            
             return Result.Success();
         }
     }

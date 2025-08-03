@@ -58,6 +58,7 @@ public class Pet : Entity<PetId>
     public HelpStatus HelpStatus { get; private set; }
     public List<Requisite> Requisites { get; private set; }
     public DateOnly Created { get; private set; }
+    public Position Position { get; private set; }
 
     public static Result<Pet> Create(
         PetId petId,
@@ -95,6 +96,16 @@ public class Pet : Entity<PetId>
             requisites);
 
         return Result.Success(pet);
+    }
+
+    public void ChangeName(Name name)
+    {
+        Name = name;
+    }
+    
+    public void SetPosition(Position position)
+    {
+        Position = position;
     }
 
     public void Delete()

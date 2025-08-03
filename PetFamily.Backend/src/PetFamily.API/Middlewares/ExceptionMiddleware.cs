@@ -3,26 +3,17 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.API.Middlewares;
 
-public class ExceptionMiddleware
+public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _logger;
-
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         try
         { 
-            await _next(context); //вызов следующего middleware
+            await next(context); //вызов следующего middleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            logger.LogError(ex, ex.Message);
             
             var responseError = Error.Failure("server.internal", ex.Message);
             var envelope = Envelope.Error(responseError);
