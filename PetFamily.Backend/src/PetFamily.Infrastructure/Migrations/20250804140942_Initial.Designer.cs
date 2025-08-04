@@ -13,8 +13,8 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250731083031_SoftDeleted")]
-    partial class SoftDeleted
+    [Migration("20250804140942_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,6 +193,15 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasMaxLength(12)
                                 .HasColumnType("character varying(12)")
                                 .HasColumnName("phone_number");
+                        });
+
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.Pet.Position#Position", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("position");
                         });
 
                     b.HasKey("Id");

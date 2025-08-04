@@ -192,6 +192,15 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasColumnName("phone_number");
                         });
 
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.Pet.Position#Position", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<int>("Value")
+                                .HasColumnType("integer")
+                                .HasColumnName("position");
+                        });
+
                     b.HasKey("Id");
 
                     b.HasIndex("volunteer_id");
