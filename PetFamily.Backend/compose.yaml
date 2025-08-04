@@ -20,8 +20,9 @@
       - SEQ_FIRSTRUN_ADMINPASSWORD=12345
     ports:
       - 5341:80
-      - 5342:5341
+      - 5342:5341  
 
 volumes:
   postgres-data:
+
 
