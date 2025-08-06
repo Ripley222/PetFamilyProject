@@ -7,6 +7,9 @@ using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.Delete;
 using PetFamily.Application.Volunteers.Delete.HardDelete;
 using PetFamily.Application.Volunteers.Delete.SoftDelete;
+using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Add;
+using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Delete;
+using PetFamily.Application.Volunteers.PetFeatures.PetFiles.GetLink;
 using PetFamily.Application.Volunteers.Update.MainInfo;
 using PetFamily.Application.Volunteers.Update.Requisites;
 using PetFamily.Application.Volunteers.Update.SocialNetworks;
@@ -134,6 +137,61 @@ public class VolunteersController : ControllerBase
         if (result.IsFailure)
             return result.Error.ToResponse();
 
+        var envelope = Envelope.Ok(result.Value);
+        
+        return Ok(envelope);
+    }
+    
+    [HttpPost("pet-file")]
+    public async Task<ActionResult<Guid>> AddPetFile(
+        IFormFile file,
+        [FromServices] AddPetFileHandler handler,
+        CancellationToken cancellationToken)
+    {
+        await using var stream = file.OpenReadStream();
+        
+        var path = Guid.NewGuid().ToString();
+
+        var command = new AddPetFileCommand(stream, "photos", path);
+
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        var envelope = Envelope.Ok(result.Value);
+        
+        return Ok(envelope);
+    }
+    
+    [HttpGet("{fileName:guid}/pet-file-link")]
+    public async Task<ActionResult<Guid>> GetPetFileLink(
+        [FromRoute] Guid fileName,
+        [FromServices] GetPetFileLinkHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new GetPetFileLinkCommand("photos", fileName.ToString());
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        var envelope = Envelope.Ok(result.Value);
+        
+        return Ok(envelope);
+    }
+    
+    [HttpDelete("{fileName:guid}/pet-file")]
+    public async Task<ActionResult<Guid>> DeletePetFile(
+        [FromRoute] Guid fileName,
+        [FromServices] DeletePetFileHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePetFileCommand("photos", fileName.ToString());
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
         var envelope = Envelope.Ok(result.Value);
         
         return Ok(envelope);

@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.Delete.HardDelete;
 using PetFamily.Application.Volunteers.Delete.SoftDelete;
+using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Add;
+using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Delete;
+using PetFamily.Application.Volunteers.PetFeatures.PetFiles.GetLink;
 using PetFamily.Application.Volunteers.Update.MainInfo;
 using PetFamily.Application.Volunteers.Update.Requisites;
 using PetFamily.Application.Volunteers.Update.SocialNetworks;
@@ -19,6 +22,9 @@ public static class Inject
         services.AddScoped<UpdateRequisitesHandler>();
         services.AddScoped<SoftDeleteVolunteerHandler>();
         services.AddScoped<HardDeleteVolunteerHandler>();
+        services.AddScoped<AddPetFileHandler>();
+        services.AddScoped<GetPetFileLinkHandler>();
+        services.AddScoped<DeletePetFileHandler>();
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;
