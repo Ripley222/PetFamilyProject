@@ -143,7 +143,7 @@ public class VolunteersController : ControllerBase
     }
     
     [HttpPost("pet-file")]
-    public async Task<ActionResult<Guid>> AddPetPhoto(
+    public async Task<ActionResult<Guid>> AddPetFile(
         IFormFile file,
         [FromServices] AddPetFileHandler handler,
         CancellationToken cancellationToken)
@@ -164,7 +164,7 @@ public class VolunteersController : ControllerBase
     }
     
     [HttpGet("{fileName:guid}/pet-file-link")]
-    public async Task<ActionResult<Guid>> GetPetPhotoLink(
+    public async Task<ActionResult<Guid>> GetPetFileLink(
         [FromRoute] Guid fileName,
         [FromServices] GetPetFileLinkHandler handler,
         CancellationToken cancellationToken)
