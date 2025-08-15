@@ -22,10 +22,10 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
         public static Result<BodySize, Error> Create(double weight, double height)
         {
             if (weight < MIN_WEIGHT || weight > MAX_WEIGHT)
-                return Errors.General.ValueIsInvalid(nameof(weight));
+                return Errors.General.ValueIsInvalid("Weight");
 
             if (height < MIN_HEIGHT || height > MAX_HEIGHT)
-                return Errors.General.ValueIsInvalid(nameof(height));
+                return Errors.General.ValueIsInvalid("Height");
 
             return new BodySize(weight, height);
         }

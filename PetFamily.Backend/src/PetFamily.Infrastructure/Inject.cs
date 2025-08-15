@@ -2,7 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using PetFamily.Application.Providers;
-using PetFamily.Application.Volunteers;
+using PetFamily.Application.SpeciesFeatures;
+using PetFamily.Application.VolunteersFeatures;
 using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
@@ -15,6 +16,7 @@ public static class Inject
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IVolunteersRepository, VolunteersRepository>();
+        services.AddScoped<ISpeciesRepository, SpeciesRepository>();
         services.AddScoped<ApplicationDbContext>();
         services.AddScoped<IFileProvider, MinioProvider>();
         services.AddMinio(configuration);

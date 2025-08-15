@@ -1,14 +1,15 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.Delete.HardDelete;
-using PetFamily.Application.Volunteers.Delete.SoftDelete;
-using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Add;
-using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Delete;
-using PetFamily.Application.Volunteers.PetFeatures.PetFiles.GetLink;
-using PetFamily.Application.Volunteers.Update.MainInfo;
-using PetFamily.Application.Volunteers.Update.Requisites;
-using PetFamily.Application.Volunteers.Update.SocialNetworks;
+using PetFamily.Application.VolunteersFeatures.Create;
+using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
+using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
+using PetFamily.Application.VolunteersFeatures.Update.MainInfo;
+using PetFamily.Application.VolunteersFeatures.Update.Requisites;
+using PetFamily.Application.VolunteersFeatures.Update.SocialNetworks;
 
 namespace PetFamily.Application;
 
@@ -25,6 +26,7 @@ public static class Inject
         services.AddScoped<AddPetFileHandler>();
         services.AddScoped<GetPetFileLinkHandler>();
         services.AddScoped<DeletePetFileHandler>();
+        services.AddScoped<AddPetHandler>();
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;

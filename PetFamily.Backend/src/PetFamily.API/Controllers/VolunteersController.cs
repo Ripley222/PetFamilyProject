@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
+using PetFamily.API.Processors;
 using PetFamily.API.Requests.Volunteer.Create;
+using PetFamily.API.Requests.Volunteer.Pet;
 using PetFamily.API.Requests.Volunteer.Update;
 using PetFamily.API.Response;
-using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.Delete;
-using PetFamily.Application.Volunteers.Delete.HardDelete;
-using PetFamily.Application.Volunteers.Delete.SoftDelete;
-using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Add;
-using PetFamily.Application.Volunteers.PetFeatures.PetFiles.Delete;
-using PetFamily.Application.Volunteers.PetFeatures.PetFiles.GetLink;
-using PetFamily.Application.Volunteers.Update.MainInfo;
-using PetFamily.Application.Volunteers.Update.Requisites;
-using PetFamily.Application.Volunteers.Update.SocialNetworks;
+using PetFamily.Application.VolunteersFeatures.Create;
+using PetFamily.Application.VolunteersFeatures.Delete;
+using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
+using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
+using PetFamily.Application.VolunteersFeatures.Update.MainInfo;
+using PetFamily.Application.VolunteersFeatures.Update.Requisites;
+using PetFamily.Application.VolunteersFeatures.Update.SocialNetworks;
 
 namespace PetFamily.API.Controllers;
 
@@ -68,10 +71,10 @@ public class VolunteersController : ControllerBase
             return result.Error.ToResponse();
 
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
+
     [HttpPut("{id:guid}/social-networks-info")]
     public async Task<ActionResult<Guid>> Update(
         [FromRoute] Guid id,
@@ -86,10 +89,10 @@ public class VolunteersController : ControllerBase
             return result.Error.ToResponse();
 
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
+
     [HttpPut("{id:guid}/requisites-info")]
     public async Task<ActionResult<Guid>> Update(
         [FromRoute] Guid id,
@@ -104,10 +107,10 @@ public class VolunteersController : ControllerBase
             return result.Error.ToResponse();
 
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
+
     [HttpDelete("{id:guid}/soft-delete")]
     public async Task<ActionResult<Guid>> Delete(
         [FromRoute] Guid id,
@@ -115,16 +118,16 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new DeleteVolunteerCommand(id);
-        
+
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
+
     [HttpDelete("{id:guid}/hard-delete")]
     public async Task<ActionResult<Guid>> Delete(
         [FromRoute] Guid id,
@@ -132,68 +135,115 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new DeleteVolunteerCommand(id);
-        
+
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
-    [HttpPost("pet-file")]
-    public async Task<ActionResult<Guid>> AddPetFile(
-        IFormFile file,
+
+    [HttpPost("{volunteerId:guid}/pet")]
+    public async Task<ActionResult<Guid>> AddPet(
+        [FromRoute] Guid volunteerId,
+        [FromBody] AddPetRequest request,
+        [FromServices] AddPetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddPetCommand(
+            volunteerId,
+            request.SpeciesName,
+            request.BreedName,
+            request.PetName,
+            request.Description,
+            request.Color,
+            request.HealthInformation,
+            request.City,
+            request.Street,
+            request.House,
+            request.Weight,
+            request.Height,
+            request.PhoneNumber,
+            request.IsNeutered,
+            request.DateOfBirth,
+            request.IsVaccinated,
+            request.HelpStatus,
+            request.Requisites);
+
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        var envelope = Envelope.Ok(result.Value);
+
+        return Ok(envelope);
+    }
+
+    [HttpPost("{volunteerId:guid}/pet/{petId:guid}/photo")]
+    public async Task<ActionResult<Guid>> Add(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        IFormFileCollection files,
         [FromServices] AddPetFileHandler handler,
         CancellationToken cancellationToken)
     {
-        await using var stream = file.OpenReadStream();
-        
-        var path = Guid.NewGuid().ToString();
+        var formFileProcessor = new FormFileProcessor();
+        var filesDto = formFileProcessor.Process(files);
 
-        var command = new AddPetFileCommand(stream, "photos", path);
+        var command = new AddPetFileCommand(volunteerId, petId, filesDto);
 
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
-    [HttpGet("{fileName:guid}/pet-file-link")]
-    public async Task<ActionResult<Guid>> GetPetFileLink(
-        [FromRoute] Guid fileName,
+
+    [HttpGet("{volunteerId:guid}/pet/{petId:guid}/photo-link")]
+    public async Task<ActionResult<Guid>> Get(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromQuery] GetPetFileLinkRequest request,
         [FromServices] GetPetFileLinkHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new GetPetFileLinkCommand("photos", fileName.ToString());
-        
+        var command = new GetPetFileLinkCommand(
+            volunteerId,
+            petId,
+            request.FileName);
+
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
-    
-    [HttpDelete("{fileName:guid}/pet-file")]
-    public async Task<ActionResult<Guid>> DeletePetFile(
-        [FromRoute] Guid fileName,
+
+    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}/pet-photo")]
+    public async Task<ActionResult<Guid>> Delete(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromQuery] DeletePetFileRequest request,
         [FromServices] DeletePetFileHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetFileCommand("photos", fileName.ToString());
-        
+        var command = new DeletePetFileCommand(
+            volunteerId, 
+            petId,
+            request.FileName);
+
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         var envelope = Envelope.Ok(result.Value);
-        
+
         return Ok(envelope);
     }
 }

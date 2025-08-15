@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.Volunteers;
+using PetFamily.Application.VolunteersFeatures;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;

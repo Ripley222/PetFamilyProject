@@ -128,19 +128,17 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             }
         }
 
-        public Result AddPet(Pet pet)
+        public Result<Guid, Error> AddPet(Pet pet)
         {
             if (_pets.Contains(pet))
-                return Result.Failure("The specified animal is already listed as a volunteer!");
+                return Error.Failure("pet.add", "Failed adding pet");
 
             var position = Position.Create(_pets.Count + 1);
-            if (position.IsFailure)
-                return Result.Failure("Position failure");
             
             pet.SetPosition(position.Value);
             
             _pets.Add(pet);
-            return Result.Success();
+            return pet.Id.Value;
         }
         
         public Result MovePet(Pet petToMove, Position newPosition)
