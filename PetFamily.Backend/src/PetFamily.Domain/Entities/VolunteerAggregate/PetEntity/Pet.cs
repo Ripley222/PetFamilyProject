@@ -1,10 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 
 public class Pet : Entity<PetId>
 {
+    private List<FilePath> _files = [];
+    
     private bool _isDeleted = false;
     
     //ef core ctor
@@ -59,8 +62,9 @@ public class Pet : Entity<PetId>
     public List<Requisite> Requisites { get; private set; }
     public DateOnly Created { get; private set; }
     public Position Position { get; private set; }
+    public IReadOnlyList<FilePath> Files => _files;
 
-    public static Result<Pet> Create(
+    public static Result<Pet, Error> Create(
         PetId petId,
         Name name,
         SpeciesBreed speciesBreed,
@@ -77,7 +81,7 @@ public class Pet : Entity<PetId>
         List<Requisite> requisites)
     {
         if (string.IsNullOrEmpty(color))
-            return Result.Failure<Pet>("Необходимо указать цвет питомца!");
+            return Error.Failure("pet.create", "Failed to create pet");
         
         var pet = new Pet(
             petId, 
@@ -95,7 +99,17 @@ public class Pet : Entity<PetId>
             helpStatus, 
             requisites);
 
-        return Result.Success(pet);
+        return pet;
+    }
+
+    public void AddPhoto(FilePath filePath)
+    {
+        _files.Add(filePath);
+    }
+    
+    public void DeletePhoto(FilePath filePath)
+    {
+        _files.Remove(filePath);
     }
 
     public void ChangeName(Name name)

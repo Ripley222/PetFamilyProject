@@ -89,12 +89,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.Property(a => a.Weight)
                 .IsRequired()
                 .HasMaxLength(BodySize.MAX_WEIGHT)
-                .HasColumnName("city");
+                .HasColumnName("weight");
             
             pb.Property(a => a.Height)
                 .IsRequired()
                 .HasMaxLength(BodySize.MAX_HEIGHT)
-                .HasColumnName("street");
+                .HasColumnName("height");
         });
 
         builder.ComplexProperty(p => p.PhoneNumber, pb =>
@@ -154,6 +154,15 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.Property(p => p.Value)
                 .IsRequired()
                 .HasColumnName("position");
+        });
+
+        builder.OwnsMany(p => p.Files, pb =>
+        {
+            pb.ToJson("files");
+
+            pb.Property(p => p.Value)
+                .IsRequired(false)
+                .HasColumnName("file");
         });
         
         builder.Property<bool>("_isDeleted")

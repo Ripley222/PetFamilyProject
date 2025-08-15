@@ -1,5 +1,7 @@
-﻿namespace PetFamily.Application.FileProvider;
+﻿using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+
+namespace PetFamily.Application.FileProvider;
 
 public record FileData(
-    string BucketName,
-    string FileName);
+    FilePath FilePath,
+    string BucketName);

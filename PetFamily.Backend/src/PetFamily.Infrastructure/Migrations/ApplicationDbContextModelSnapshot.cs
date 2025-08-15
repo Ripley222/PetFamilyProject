@@ -100,7 +100,6 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)")
                                 .HasColumnName("city");
@@ -113,7 +112,6 @@ namespace PetFamily.Infrastructure.Migrations
 
                             b1.Property<string>("Street")
                                 .IsRequired()
-                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)")
                                 .HasColumnName("street");
@@ -124,16 +122,14 @@ namespace PetFamily.Infrastructure.Migrations
                             b1.IsRequired();
 
                             b1.Property<double>("Height")
-                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(300)
                                 .HasColumnType("double precision")
-                                .HasColumnName("street");
+                                .HasColumnName("height");
 
                             b1.Property<double>("Weight")
-                                .ValueGeneratedOnUpdateSometimes()
                                 .HasMaxLength(150)
                                 .HasColumnType("double precision")
-                                .HasColumnName("city");
+                                .HasColumnName("weight");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("Description", "PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.Pet.Description#Description", b1 =>
@@ -332,6 +328,29 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasForeignKey("PetId");
                         });
 
+                    b.OwnsMany("PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects.FilePath", "Files", b1 =>
+                        {
+                            b1.Property<Guid>("PetId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("__synthesizedOrdinal")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Value")
+                                .HasColumnType("text")
+                                .HasColumnName("file");
+
+                            b1.HasKey("PetId", "__synthesizedOrdinal");
+
+                            b1.ToTable("pets");
+
+                            b1.ToJson("files");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PetId");
+                        });
+
                     b.OwnsOne("PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects.SpeciesBreed", "SpeciesBreed", b1 =>
                         {
                             b1.Property<Guid>("PetId")
@@ -352,6 +371,8 @@ namespace PetFamily.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PetId");
                         });
+
+                    b.Navigation("Files");
 
                     b.Navigation("Requisites");
 

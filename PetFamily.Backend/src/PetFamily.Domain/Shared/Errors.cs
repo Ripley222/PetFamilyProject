@@ -35,4 +35,28 @@ public static class Errors
                return Error.NotFound("record.not.found", $"volunteer not found");
           }
      }
+     
+     public static class Pet
+     {
+          public static Error NotFound()
+          {
+               return Error.NotFound("record.not.found", $"pet not found");
+          }
+     }
+
+     public static class Species
+     {
+          public static Error NotFound()
+          {
+               return Error.NotFound("record.not.found", $"species not found");
+          }
+     }
+     
+     public static class Breed
+     {
+          public static Error NotFound()
+          {
+               return Error.NotFound("record.not.found", $"breed not found");
+          }
+     }
 }
