@@ -141,10 +141,10 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             return pet.Id.Value;
         }
         
-        public Result MovePet(Pet petToMove, Position newPosition)
+        public Result<Guid, Error> MovePet(Pet petToMove, Position newPosition)
         {
             if (newPosition.Value > _pets.Count)
-                return Result.Failure("New position is out of range");
+                return Error.Failure("pet.move", "Failed moving pet");
             
             var orderPets = _pets.OrderBy(p => p.Position.Value).ToList();
            
@@ -156,7 +156,7 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
                 orderPets[i].SetPosition(Position.Create(i + 1).Value);
             }
             
-            return Result.Success();
+            return petToMove.Id.Value;
         }
     }
 }
