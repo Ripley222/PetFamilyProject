@@ -23,9 +23,7 @@ public class AddPetHandler(
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
-        {
            return validationResult.GetErrors();
-        }
         
         var volunteer = await volunteerRepository
             .GetById(VolunteerId.Create(command.VolunteerId), cancellationToken);

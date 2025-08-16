@@ -4,6 +4,7 @@ using PetFamily.Application.VolunteersFeatures.Create;
 using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
 using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
@@ -27,6 +28,7 @@ public static class Inject
         services.AddScoped<GetPetFileLinkHandler>();
         services.AddScoped<DeletePetFileHandler>();
         services.AddScoped<AddPetHandler>();
+        services.AddScoped<MovePetHandler>();
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
         return services;

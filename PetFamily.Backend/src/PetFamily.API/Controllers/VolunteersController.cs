@@ -10,6 +10,7 @@ using PetFamily.Application.VolunteersFeatures.Delete;
 using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
 using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
@@ -244,6 +245,28 @@ public class VolunteersController : ControllerBase
 
         var envelope = Envelope.Ok(result.Value);
 
+        return Ok(envelope);
+    }
+
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/move")]
+    public async Task<ActionResult<Guid>> MovePet(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromQuery]  MovePetRequest request,
+        [FromServices] MovePetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new MovePetCommand(
+            volunteerId,
+            petId,
+            request.NewPosition);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        var envelope = Envelope.Ok(result.Value);
+        
         return Ok(envelope);
     }
 }
