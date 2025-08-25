@@ -1,4 +1,5 @@
 ﻿using PetFamily.Application.VolunteersFeatures.DTOs;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 
 namespace PetFamily.API.Requests.Volunteer.Pet;
 
@@ -19,4 +20,25 @@ public record AddPetRequest(
     DateOnly DateOfBirth,
     bool IsVaccinated,
     string HelpStatus,
-    IEnumerable<RequisitesDto> Requisites);
+    IEnumerable<RequisitesDto> Requisites)
+{
+    public AddPetCommand ToCommand(Guid volunteerId) =>
+        new(volunteerId,
+            SpeciesName,
+            BreedName,
+            PetName,
+            Description,
+            Color,
+            HealthInformation,
+            City,
+            Street,
+            House,
+            Weight,
+            Height,
+            PhoneNumber,
+            IsNeutered,
+            DateOfBirth,
+            IsVaccinated,
+            HelpStatus,
+            Requisites);
+}
