@@ -1,6 +1,4 @@
-﻿using PetFamily.Application.FileProvider;
-
-namespace PetFamily.Application.Messaging;
+﻿namespace PetFamily.Application.Messaging;
 
 public interface IMassageChannel<TMessage>
 {
