@@ -16,12 +16,12 @@ public class FilesCleanerBackgroundService(
     {
         logger.LogInformation("FilesCleanerBackgroundService is starting.");
         
-        await using var scope = serviceScopeFactory.CreateAsyncScope();
-
-        var fileProvider = scope.ServiceProvider.GetRequiredService<IFileProvider>();
-        
         while (!stoppingToken.IsCancellationRequested)
         {
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+
+            var fileProvider = scope.ServiceProvider.GetRequiredService<IFileProvider>();
+            
             //чтение данных из Channel для удаления
             var fileInfos = await massageChannel.ReadAsync(stoppingToken);
 
