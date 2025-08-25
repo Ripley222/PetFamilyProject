@@ -33,7 +33,5 @@ public class FilesCleanerBackgroundService(
                     "FilesCleanerBackgroundService deleting file with path {path}.", fileInfo.FilePath.Value);
             }
         }
-        
-        await Task.CompletedTask;
     }
 }
