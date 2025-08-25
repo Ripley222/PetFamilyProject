@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.FileProvider;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -14,6 +15,7 @@ public class AddPetFileHandler(
     IVolunteersRepository repository,
     IFileProvider fileProvider,
     IValidator<AddPetFileCommand> validator,
+    IMassageChannel<IEnumerable<FileData>>  massageChannel,
     ILogger<AddPetFileHandler> logger)
 {
     private const string BUCKET_NAME = "photos";
@@ -53,7 +55,13 @@ public class AddPetFileHandler(
         
         var result = await fileProvider.UploadFiles(filesData, cancellationToken);
         if (result.IsFailure)
+        {
+            // запись данных о путях в Channel
+            await massageChannel.WriteAsync(filesData.Select(f => f.FileData), cancellationToken);
+            
             return result.Error;
+        }
+            
         
         foreach (var file in filesData)
         {

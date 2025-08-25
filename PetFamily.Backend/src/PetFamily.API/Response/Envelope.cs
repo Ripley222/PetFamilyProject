@@ -19,5 +19,5 @@ public record Envelope
         new(result, null);
     
     public static Envelope Error(ErrorList errors) =>
-        new(null, errors);
+        new(null, errors);  
 }

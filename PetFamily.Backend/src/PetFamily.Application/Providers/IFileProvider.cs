@@ -12,5 +12,5 @@ public interface IFileProvider
 
     Task<Result<string, ErrorList>> GetFileLink(FileData fileData, CancellationToken cancellationToken = default);
 
-    Task<Result<string, ErrorList>> RemoveFile(FileData fileData, CancellationToken cancellationToken = default);
+    Task<UnitResult<ErrorList>> RemoveFile(FileData fileData, CancellationToken cancellationToken = default);
 }

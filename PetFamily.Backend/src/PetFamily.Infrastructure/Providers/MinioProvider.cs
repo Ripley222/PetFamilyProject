@@ -71,19 +71,27 @@ public class MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logg
         }
     }
 
-    public async Task<Result<string, ErrorList>> RemoveFile(
+    public async Task<UnitResult<ErrorList>> RemoveFile(
         FileData fileData, 
         CancellationToken cancellationToken = default)
     {
         try
         {
+            var statObjectArgs = new StatObjectArgs()
+                .WithBucket(fileData.BucketName)
+                .WithObject(fileData.FilePath.Value);
+            
+            var objectStat = await minioClient.StatObjectAsync(statObjectArgs, cancellationToken);
+            if (objectStat is null)
+                return Result.Success<ErrorList>();
+            
             var removeObjectArgs = new RemoveObjectArgs()
                 .WithBucket(fileData.BucketName)
                 .WithObject(fileData.FilePath.Value);
             
             await minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
             
-            return fileData.FilePath.Value;
+            return Result.Success<ErrorList>();
         }
         catch (Exception ex)
         {
