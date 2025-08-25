@@ -243,7 +243,7 @@ public class VolunteersController : ControllerBase
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        var envelope = Envelope.Ok(result.Value);
+        var envelope = Envelope.Ok(result);
 
         return Ok(envelope);
     }

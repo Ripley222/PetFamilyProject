@@ -18,7 +18,7 @@ public class DeletePetFileHandler(
 {
     private const string BUCKET_NAME = "photos";
     
-    public async Task<Result<string, ErrorList>> Handle(
+    public async Task<UnitResult<ErrorList>> Handle(
         DeletePetFileCommand command,
         CancellationToken cancellationToken = default)
     {
