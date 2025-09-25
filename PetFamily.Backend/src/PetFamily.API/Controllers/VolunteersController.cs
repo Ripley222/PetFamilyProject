@@ -2,6 +2,7 @@
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.API.Requests.Volunteer.Create;
+using PetFamily.API.Requests.Volunteer.Get;
 using PetFamily.API.Requests.Volunteer.Pet;
 using PetFamily.API.Requests.Volunteer.Update;
 using PetFamily.API.Response;
@@ -9,6 +10,9 @@ using PetFamily.Application.VolunteersFeatures.Create;
 using PetFamily.Application.VolunteersFeatures.Delete;
 using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
 using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
+using PetFamily.Application.VolunteersFeatures.DTOs;
+using PetFamily.Application.VolunteersFeatures.GetById;
+using PetFamily.Application.VolunteersFeatures.GetWithPagination;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
@@ -190,7 +194,7 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new DeletePetFileCommand(
-            volunteerId, 
+            volunteerId,
             petId,
             request.FileName);
 
@@ -207,7 +211,7 @@ public class VolunteersController : ControllerBase
     public async Task<ActionResult<Guid>> MovePet(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
-        [FromQuery]  MovePetRequest request,
+        [FromQuery] MovePetRequest request,
         [FromServices] MovePetHandler handler,
         CancellationToken cancellationToken)
     {
@@ -215,13 +219,43 @@ public class VolunteersController : ControllerBase
             volunteerId,
             petId,
             request.NewPosition);
+
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        var envelope = Envelope.Ok(result.Value);
+
+        return Ok(envelope);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromQuery] GetVolunteersRequest query,
+        [FromServices] GetVolunteersHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(query.ToCommand(), cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        var envelope = Envelope.Ok(result.Value);
+        return Ok(envelope);
+    }
+
+    [HttpGet("{volunteerId:guid}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid volunteerId,
+        [FromServices] GetVolunteersByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new GetVolunteersByIdCommand(volunteerId);
         
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         var envelope = Envelope.Ok(result.Value);
-        
         return Ok(envelope);
     }
 }

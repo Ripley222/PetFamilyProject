@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
 using PetFamily.Domain.Entities.SpeciesAggregate;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 
 namespace PetFamily.Infrastructure;
 
-public class ApplicationDbContext(IConfiguration configuration) : DbContext
+public class ApplicationDbContext(IConfiguration configuration) : DbContext, IReadDbContext
 {
     private const string DATABASE = "Database";
     
@@ -27,4 +28,6 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
     
     private ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => {builder.AddConsole();});
+
+    public IQueryable<Volunteer> VolunteersRead => Set<Volunteer>().AsNoTracking().AsQueryable();
 }

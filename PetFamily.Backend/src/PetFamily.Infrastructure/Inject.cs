@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
+using PetFamily.Application.Database;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
@@ -19,9 +20,11 @@ public static class Inject
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<ApplicationDbContext>();
+        services.AddScoped<IReadDbContext, ApplicationDbContext>();
+        
         services.AddScoped<IVolunteersRepository, VolunteersRepository>();
         services.AddScoped<ISpeciesRepository, SpeciesRepository>();
-        services.AddScoped<ApplicationDbContext>();
         services.AddScoped<IFileProvider, MinioProvider>();
         
         services.AddHostedService<FilesCleanerBackgroundService>();
