@@ -4,9 +4,9 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.VolunteersFeatures.GetById;
 
-public class GetVolunteersByIdCommandValidator : AbstractValidator<GetVolunteersByIdCommand>
+public class GetVolunteersByIdQueryValidator : AbstractValidator<GetVolunteersByIdQuery>
 {
-    public GetVolunteersByIdCommandValidator()
+    public GetVolunteersByIdQueryValidator()
     {
         RuleFor(g => g.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
     }

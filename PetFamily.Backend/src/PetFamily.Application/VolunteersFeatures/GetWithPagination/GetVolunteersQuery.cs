@@ -1,5 +1,5 @@
 ﻿namespace PetFamily.Application.VolunteersFeatures.GetWithPagination;
 
-public record GetVolunteersCommand(
+public record GetVolunteersQuery(
     int Page,
     int PageSize);

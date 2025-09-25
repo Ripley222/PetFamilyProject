@@ -4,9 +4,9 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.VolunteersFeatures.GetWithPagination;
 
-public class GetVolunteersCommandValidator : AbstractValidator<GetVolunteersCommand>
+public class GetVolunteersQueryValidator : AbstractValidator<GetVolunteersQuery>
 {
-    public GetVolunteersCommandValidator()
+    public GetVolunteersQueryValidator()
     {
         RuleFor(g => g.Page)
             .Must(p => p > 0)

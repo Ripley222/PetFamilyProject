@@ -10,10 +10,10 @@ namespace PetFamily.Application.VolunteersFeatures.GetWithPagination;
 
 public class GetVolunteersHandler(
     IReadDbContext readDbContext,
-    IValidator<GetVolunteersCommand> validator)
+    IValidator<GetVolunteersQuery> validator)
 {
     public async Task<Result<GetVolunteersDto?, ErrorList>> Handle(
-        GetVolunteersCommand query,
+        GetVolunteersQuery query,
         CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(query, cancellationToken);

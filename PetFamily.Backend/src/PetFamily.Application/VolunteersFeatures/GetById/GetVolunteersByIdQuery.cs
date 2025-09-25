@@ -1,4 +1,4 @@
 ﻿namespace PetFamily.Application.VolunteersFeatures.GetById;
 
-public record GetVolunteersByIdCommand(
+public record GetVolunteersByIdQuery(
     Guid VolunteerId);
