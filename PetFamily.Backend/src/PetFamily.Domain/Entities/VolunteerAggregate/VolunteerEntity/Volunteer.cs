@@ -88,11 +88,9 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
 
         public Result<Pet> GetPetById(PetId petId)
         {
-            var result = _pets.Where(p => p.Id == petId);
-            if (result.Count() > 1)
-                return Result.Failure<Pet>("There is more than one pet with this id");
+            var result = _pets.Where(p => p.Id == petId).ToList();
             
-            if (result.Any() == false)
+            if (result.Count is 0)
                 return Result.Failure<Pet>("There is no pet with this id");
 
             return Result.Success(result.First());
@@ -128,7 +126,7 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             }
         }
 
-        public Result<Guid, Error> AddPet(Pet pet)
+        public UnitResult<Error> AddPet(Pet pet)
         {
             if (_pets.Contains(pet))
                 return Error.Failure("pet.add", "Failed adding pet");
@@ -138,7 +136,8 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             pet.SetPosition(position.Value);
             
             _pets.Add(pet);
-            return pet.Id.Value;
+
+            return UnitResult.Success<Error>();
         }
         
         public Result<Guid, Error> MovePet(Pet petToMove, Position newPosition)

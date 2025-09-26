@@ -4,8 +4,8 @@ using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 namespace PetFamily.API.Requests.Volunteer.Pet;
 
 public record AddPetRequest(
-    string SpeciesName,
-    string BreedName,
+    Guid SpeciesId,
+    Guid BreedId,
     string PetName,
     string Description,
     string Color,
@@ -24,8 +24,8 @@ public record AddPetRequest(
 {
     public AddPetCommand ToCommand(Guid volunteerId) =>
         new(volunteerId,
-            SpeciesName,
-            BreedName,
+            SpeciesId,
+            BreedId,
             PetName,
             Description,
             Color,

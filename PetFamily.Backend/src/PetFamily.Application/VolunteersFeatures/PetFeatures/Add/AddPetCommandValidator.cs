@@ -6,15 +6,21 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 
-public class AddPetCommandValidation :  AbstractValidator<AddPetCommand>
+public class AddPetCommandValidator : AbstractValidator<AddPetCommand>
 {
-    public AddPetCommandValidation()
+    public AddPetCommandValidator()
     {
-        RuleFor(a => a.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(a => a.VolunteerId)
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsRequired("VolunteerId"));
 
-        RuleFor(a => a.SpeciesName).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(a => a.SpeciesId)
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsRequired("SpeciesId"));
 
-        RuleFor(a => a.BreedName).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(a => a.BreedId)
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsRequired("BreedId"));
 
         RuleFor(a => a.Name).MustBeValueObject(Name.Create);
 
@@ -33,11 +39,11 @@ public class AddPetCommandValidation :  AbstractValidator<AddPetCommand>
 
         RuleFor(a => new { a.Weight, a.Height })
             .MustBeValueObject(b => BodySize.Create(b.Weight, b.Height));
-        
+
         RuleFor(a => a.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
 
         RuleFor(a => a.HelpStatus).MustBeValueObject(HelpStatus.Create);
-        
+
         RuleForEach(a => a.Requisites)
             .SetValidator(new CreateRequisitesDtoValidator());
     }
