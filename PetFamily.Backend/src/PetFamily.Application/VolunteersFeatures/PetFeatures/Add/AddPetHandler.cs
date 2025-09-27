@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.SpeciesFeatures;
 using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
@@ -13,7 +13,7 @@ namespace PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 
 public class AddPetHandler(
     IVolunteersRepository volunteerRepository,
-    ISpeciesRepository speciesRepository,
+    IReadDbContext readDbContext,
     IValidator<AddPetCommand> validator,
     ILogger<AddPetHandler> logger)
 {
@@ -31,17 +31,18 @@ public class AddPetHandler(
         if (volunteer.IsFailure)
             return volunteer.Error.ToErrorList();
         
-        var speciesExistResult = await speciesRepository
-            .GetByName(command.SpeciesName, cancellationToken);
-        
-        if (speciesExistResult.IsFailure)
-            return speciesExistResult.Error.ToErrorList();
+        var speciesId = SpeciesId.Create(command.SpeciesId);
+        var breedId = BreedId.Create(command.BreedId);
 
-        var breedExist = speciesExistResult.Value.Breeds
-            .FirstOrDefault(b => b.Name == command.BreedName);
+        var speciesQuery = readDbContext.SpeciesRead;
+
+        speciesQuery = speciesQuery
+            .Where(s => 
+                s.Id == speciesId && 
+                s.Breeds.Any(b => b.Id == breedId));
         
-        if (breedExist is null)
-            return Errors.Breed.NotFound().ToErrorList();
+        if (speciesQuery.Any() is false)
+            return Errors.General.NotFound().ToErrorList();
 
         var petId = PetId.New();
         var name = Name.Create(command.Name).Value;
@@ -56,9 +57,7 @@ public class AddPetHandler(
             .Select(r => Requisite.Create(r.AccountNumber, r.Title, r.Description).Value)
             .ToList();
         
-        var speciesBreed = SpeciesBreed.Create(
-            SpeciesId.Create(speciesExistResult.Value.Id.Value),
-            BreedId.Create(breedExist.Id.Value));
+        var speciesBreed = SpeciesBreed.Create(speciesId, breedId);
         
         var pet = Pet.Create(
             petId,
@@ -79,15 +78,15 @@ public class AddPetHandler(
         if (pet.IsFailure)
             return pet.Error.ToErrorList();
         
-        var result = volunteer.Value.AddPet(pet.Value);
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
+        var addPetToVolunteerResult = volunteer.Value.AddPet(pet.Value);
+        if (addPetToVolunteerResult.IsFailure)
+            return addPetToVolunteerResult.Error.ToErrorList();
         
         await volunteerRepository.Save(volunteer.Value, cancellationToken);
         
         logger.LogInformation("Added pet with id {petId} to volunteer with id {volunteerId}",
             petId.Value, command.VolunteerId);
 
-        return result.Value;
+        return pet.Value.Id.Value;
     }
 }

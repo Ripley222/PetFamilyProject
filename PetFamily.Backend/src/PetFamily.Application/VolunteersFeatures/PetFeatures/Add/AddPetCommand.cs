@@ -4,8 +4,8 @@ namespace PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 
 public record AddPetCommand(
     Guid VolunteerId,
-    string SpeciesName,
-    string BreedName,
+    Guid SpeciesId,
+    Guid BreedId,
     string Name,
     string Description,
     string Color,

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Domain.Entities.SpeciesAggregate;
+using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
 
 namespace PetFamily.Infrastructure;
@@ -30,4 +31,7 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext, IRe
         LoggerFactory.Create(builder => {builder.AddConsole();});
 
     public IQueryable<Volunteer> VolunteersRead => Set<Volunteer>().AsNoTracking().AsQueryable();
+    public IQueryable<Pet> PetsRead => Set<Pet>().AsNoTracking().AsQueryable();
+    public IQueryable<Species> SpeciesRead => Set<Species>().AsNoTracking().AsQueryable();
+    public IQueryable<Breed> BreedsRead => Set<Breed>().AsNoTracking().AsQueryable();
 }
