@@ -11,6 +11,7 @@ namespace PetFamily.Application.SpeciesFeatures.BreedsFeatures.Delete;
 
 public class DeleteBreedsHandler(
     IReadDbContext readDbContext,
+    ISpeciesRepository speciesRepository,
     IValidator<DeleteBreedsCommand> validator,
     ILogger<DeleteBreedsHandler> logger)
 {
@@ -23,21 +24,25 @@ public class DeleteBreedsHandler(
             return validationResult.GetErrors();
 
         var breedId = BreedId.Create(command.BreedId);
-        
+
         var petQuery = readDbContext.PetsRead;
-        
+
         petQuery = petQuery.Where(p => p.SpeciesBreed.BreedId == breedId);
         if (petQuery.Any())
             return Error.Failure("breed.used", "This breed is used").ToErrorList();
-        
-        var breedsQuery = readDbContext.BreedsRead;
 
-        breedsQuery = breedsQuery.Where(b => b.Id == breedId);
-        if (breedsQuery.Any() is false)
-            return Errors.General.NotFound(command.BreedId).ToErrorList();
+        var breedQuery = readDbContext.BreedsRead;
 
-        await breedsQuery.ExecuteDeleteAsync(cancellationToken);
-        
+        var breed = await breedQuery
+            .FirstOrDefaultAsync(b => b.Id == breedId, cancellationToken);
+
+        if (breed is null)
+            return Error.NotFound("breed.not.found", "Breed not found").ToErrorList();
+
+        var deletedResult = await speciesRepository.RemoveBreed(breed, cancellationToken);
+        if (deletedResult.IsFailure)
+            return deletedResult.Error.ToErrorList();
+
         logger.LogInformation("Breed with id {breedId} has been deleted", breedId.Value);
 
         return breedId.Value;

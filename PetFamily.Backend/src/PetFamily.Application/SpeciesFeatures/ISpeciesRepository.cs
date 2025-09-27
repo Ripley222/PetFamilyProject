@@ -7,5 +7,7 @@ namespace PetFamily.Application.SpeciesFeatures;
 
 public interface ISpeciesRepository
 {
-    Task<Result<Species, Error>> GetByName(string name, CancellationToken cancellationToken = default);
+    Task<Result<Guid, Error>> RemoveSpecies(Species species, CancellationToken cancellationToken = default);
+
+    Task<Result<Guid, Error>> RemoveBreed(Breed breed, CancellationToken cancellationToken = default);
 }

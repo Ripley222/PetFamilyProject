@@ -11,6 +11,7 @@ namespace PetFamily.Application.SpeciesFeatures.Delete;
 
 public class DeleteSpeciesHandler(
     IReadDbContext readDbContext,
+    ISpeciesRepository speciesRepository,
     IValidator<DeleteSpeciesCommand> validator,
     ILogger<DeleteSpeciesHandler> logger)
 {
@@ -23,21 +24,25 @@ public class DeleteSpeciesHandler(
             return validationResult.GetErrors();
 
         var speciesId = SpeciesId.Create(command.SpeciesId);
-        
+
         var petQuery = readDbContext.PetsRead;
-        
+
         petQuery = petQuery.Where(p => p.SpeciesBreed.SpeciesId == speciesId);
         if (petQuery.Any())
             return Error.Failure("species.used", "Species is used").ToErrorList();
-        
-        var speciesQuery = readDbContext.SpeciesRead;
-        
-        speciesQuery = speciesQuery.Where(s => s.Id == speciesId);
 
-        await speciesQuery.ExecuteDeleteAsync(cancellationToken);
-        
+        var speciesQuery = readDbContext.SpeciesRead;
+
+        var specie = await speciesQuery.FirstOrDefaultAsync(s => s.Id == speciesId, cancellationToken);
+        if (specie is null)
+            return Errors.Species.NotFound().ToErrorList();
+
+        var deletedResult = await speciesRepository.RemoveSpecies(specie, cancellationToken);
+        if (deletedResult.IsFailure)
+            return deletedResult.Error.ToErrorList();
+
         logger.LogInformation("Species with id {speciesId} has been deleted", speciesId.Value);
-        
+
         return speciesId.Value;
     }
 }
