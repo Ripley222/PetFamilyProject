@@ -50,7 +50,7 @@ namespace PetFamily.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    species_id = table.Column<Guid>(type: "uuid", nullable: true)
+                    species_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,8 +75,9 @@ namespace PetFamily.Infrastructure.Migrations
                     date_of_birth = table.Column<DateOnly>(type: "date", nullable: false),
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     created = table.Column<DateOnly>(type: "date", nullable: false),
+                    main_file = table.Column<string>(type: "text", nullable: true),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     house = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
                     street = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
