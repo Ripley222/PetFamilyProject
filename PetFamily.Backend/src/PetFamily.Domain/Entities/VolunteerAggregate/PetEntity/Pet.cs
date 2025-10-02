@@ -47,21 +47,22 @@ public class Pet : Entity<PetId>
         Created = DateOnly.FromDateTime(DateTime.Now);
     }
 
-    public Name Name { get; private set; }
-    public SpeciesBreed SpeciesBreed { get; private set; }
-    public Description Description { get; private set; }
-    public string Color { get; private set; }
-    public HealthInformation HealthInformation { get; private set; }
-    public Address Address { get; private set; }
-    public BodySize BodySize { get; private set; }
-    public PhoneNumber PhoneNumber { get; private set; }
+    public Name Name { get; private set; } = null!;
+    public SpeciesBreed SpeciesBreed { get; private set; } = null!;
+    public Description Description { get; private set; } = null!;
+    public string Color { get; private set; } = null!;
+    public HealthInformation HealthInformation { get; private set; } = null!;
+    public Address Address { get; private set; } = null!;
+    public BodySize BodySize { get; private set; } = null!;
+    public PhoneNumber PhoneNumber { get; private set; } = null!;
     public bool IsNeutered { get; private set; }
     public DateOnly DateOfBirth { get; private set; }
     public bool IsVaccinated { get; private set; }
-    public HelpStatus HelpStatus { get; private set; }
-    public List<Requisite> Requisites { get; private set; }
+    public HelpStatus HelpStatus { get; private set; } = null!;
+    public List<Requisite> Requisites { get; private set; } = null!;
     public DateOnly Created { get; private set; }
-    public Position Position { get; private set; }
+    public Position Position { get; private set; } = null!;
+    public MainFile MainFile { get; private set; }
     public IReadOnlyList<FilePath> Files => _files;
 
     public static Result<Pet, Error> Create(
@@ -102,19 +103,59 @@ public class Pet : Entity<PetId>
         return pet;
     }
 
+    public UnitResult<Error> Update(
+        Name name,
+        SpeciesBreed speciesBreed,
+        Description description,
+        string color,
+        HealthInformation healthInformation,
+        Address address,
+        BodySize bodySize,
+        PhoneNumber phoneNumber,
+        bool isNeutered,
+        DateOnly dateOfBirth,
+        bool isVaccinated,
+        HelpStatus helpStatus,
+        List<Requisite> requisites)
+    {
+        if (string.IsNullOrEmpty(color))
+            return Error.Failure("pet.update", "Failed to updated pet");
+        
+        Name = name;
+        SpeciesBreed = speciesBreed;
+        Description = description;
+        Color = color;
+        HealthInformation = healthInformation;
+        Address = address;
+        BodySize = bodySize;
+        PhoneNumber = phoneNumber;
+        IsNeutered = isNeutered;
+        DateOfBirth = dateOfBirth;
+        IsVaccinated = isVaccinated;
+        HelpStatus = helpStatus;
+        Requisites = requisites;
+
+        return UnitResult.Success<Error>();
+    }
+
+    public void UpdateStatus(HelpStatus helpStatus)
+    {
+        HelpStatus = helpStatus;
+    }
+
     public void AddPhoto(FilePath filePath)
     {
         _files.Add(filePath);
+    }
+
+    public void SetMainPhoto(MainFile mainFile)
+    {
+        MainFile = mainFile;
     }
     
     public void DeletePhoto(FilePath filePath)
     {
         _files.Remove(filePath);
-    }
-
-    public void ChangeName(Name name)
-    {
-        Name = name;
     }
     
     public void SetPosition(Position position)
