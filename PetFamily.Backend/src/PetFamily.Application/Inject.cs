@@ -10,10 +10,16 @@ using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
 using PetFamily.Application.VolunteersFeatures.GetById;
 using PetFamily.Application.VolunteersFeatures.GetWithPagination;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.HardDelete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.SoftDelete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddMainFile;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddManyFiles;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Update.FullInfo;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Update.Status;
 using PetFamily.Application.VolunteersFeatures.Update.MainInfo;
 using PetFamily.Application.VolunteersFeatures.Update.Requisites;
 using PetFamily.Application.VolunteersFeatures.Update.SocialNetworks;
@@ -33,12 +39,20 @@ public static class Inject
         services.AddScoped<SoftDeleteVolunteerHandler>();
         services.AddScoped<HardDeleteVolunteerHandler>();
         
-        services.AddScoped<AddPetFileHandler>();
+        services.AddScoped<AddPetFilesHandler>();
         services.AddScoped<GetPetFileLinkHandler>();
         services.AddScoped<DeletePetFileHandler>();
         
+        services.AddScoped<AddMainFileHandler>();
+        
         services.AddScoped<AddPetHandler>();
         services.AddScoped<MovePetHandler>();
+        
+        services.AddScoped<UpdatePetHandler>();
+        services.AddScoped<UpdatePetStatusHandler>();
+        
+        services.AddScoped<SoftDeletePetHandler>();
+        services.AddScoped<HardDeletePetHandler>();
         
         services.AddScoped<GetVolunteersHandler>();
         services.AddScoped<GetVolunteersByIdHandler>();
