@@ -42,7 +42,7 @@ public class AddPetHandler(
                 s.Breeds.Any(b => b.Id == breedId));
         
         if (speciesQuery.Any() is false)
-            return Errors.General.NotFound().ToErrorList();
+            return Errors.Species.NotFound().ToErrorList();
 
         var petId = PetId.New();
         var name = Name.Create(command.Name).Value;
@@ -82,7 +82,9 @@ public class AddPetHandler(
         if (addPetToVolunteerResult.IsFailure)
             return addPetToVolunteerResult.Error.ToErrorList();
         
-        await volunteerRepository.Save(volunteer.Value, cancellationToken);
+        var saveResult = await volunteerRepository.Save(volunteer.Value, cancellationToken);
+        if (saveResult.IsFailure)
+            return saveResult.Error.ToErrorList();
         
         logger.LogInformation("Added pet with id {petId} to volunteer with id {volunteerId}",
             petId.Value, command.VolunteerId);

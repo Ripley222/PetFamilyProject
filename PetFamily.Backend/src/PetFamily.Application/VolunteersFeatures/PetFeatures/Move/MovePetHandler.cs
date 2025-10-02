@@ -45,6 +45,6 @@ public class MovePetHandler(
             command.PetId,
             command.VolunteerId);
         
-        return result.Value;
+        return petExit.Id.Value;
     }
 }

@@ -41,10 +41,12 @@ public class UpdateMainInfoHandler(
             yearsOfExperience,
             phoneNumber);
 
-        var result = await repository.Save(resultVolunteer.Value, cancellationToken);
+        var saveResult = await repository.Save(resultVolunteer.Value, cancellationToken);
+        if (saveResult.IsFailure)
+            return saveResult.Error.ToErrorList();
         
         logger.LogInformation("Updates main info volunteer with id {volunteerId}", command.VolunteerId);
         
-        return result;
+        return saveResult.Value;
     }
 }

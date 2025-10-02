@@ -26,10 +26,12 @@ public class HardDeleteVolunteerHandler(
         if (resultVolunteer.IsFailure)
             return resultVolunteer.Error.ToErrorList();
         
-        var result = await repository.Delete(resultVolunteer.Value, cancellationToken);
+        var deleteResult = await repository.Delete(resultVolunteer.Value, cancellationToken);
+        if (deleteResult.IsFailure)
+            return deleteResult.Error.ToErrorList();
         
         logger.LogInformation("Hard deleted volunteer with id {volunteerId}", command.VolunteerId);
         
-        return result;
+        return deleteResult.Value;
     }
 }
