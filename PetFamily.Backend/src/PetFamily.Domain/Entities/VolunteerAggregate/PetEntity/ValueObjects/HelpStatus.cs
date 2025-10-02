@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.Enums;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
@@ -7,9 +8,9 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
     {
         public const int MAX_VALUE_LENGTH = 50;
         
-        public static readonly HelpStatus NeedsHelp = new(nameof(NeedsHelp));
-        public static readonly HelpStatus LookingHome = new(nameof(LookingHome));
-        public static readonly HelpStatus FoundHome = new(nameof(FoundHome));
+        public static readonly HelpStatus NeedsHelp = new(nameof(HelpStatusEnum.NeedsHelp));
+        public static readonly HelpStatus LookingHome = new(nameof(HelpStatusEnum.LookingHome));
+        public static readonly HelpStatus FoundHome = new(nameof(HelpStatusEnum.FoundHome));
 
         private static readonly HelpStatus[] _all = [NeedsHelp, LookingHome, FoundHome];
 
@@ -27,7 +28,7 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects
 
             var valueToLower = value.Trim().ToLower();
 
-            if (_all.Any(h => h.Value.ToLower() == valueToLower) == false)
+            if (_all.Any(h => h.Value.ToLower() == valueToLower) is false)
                 return Errors.General.ValueIsInvalid("HelpStatus");
 
             return new HelpStatus(value);
