@@ -156,6 +156,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("position");
         });
 
+        builder.OwnsOne(p => p.MainFile, pb =>
+        {
+            pb.Property(m => m.Value)
+                .IsRequired(false)
+                .HasColumnName("main_file");
+        });
+
         builder.OwnsMany(p => p.Files, pb =>
         {
             pb.ToJson("files");

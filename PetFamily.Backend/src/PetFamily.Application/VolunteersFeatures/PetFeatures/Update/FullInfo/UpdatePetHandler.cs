@@ -4,68 +4,69 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
-using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
+namespace PetFamily.Application.VolunteersFeatures.PetFeatures.Update.FullInfo;
 
-public class AddPetHandler(
-    IVolunteersRepository volunteerRepository,
+public class UpdatePetHandler(
+    IVolunteersRepository volunteersRepository,
     IReadDbContext readDbContext,
-    IValidator<AddPetCommand> validator,
-    ILogger<AddPetHandler> logger)
+    IValidator<UpdatePetCommand> validator,
+    ILogger<UpdatePetHandler> logger)
 {
     public async Task<Result<Guid, ErrorList>> Handle(
-        AddPetCommand command,
-        CancellationToken cancellationToken = default)
+        UpdatePetCommand command,
+        CancellationToken cancellationToken)
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
-        if (validationResult.IsValid == false)
-           return validationResult.GetErrors();
-        
-        var volunteer = await volunteerRepository
-            .GetById(VolunteerId.Create(command.VolunteerId), cancellationToken);
+        if (validationResult.IsValid is false)
+            return validationResult.GetErrors();
 
-        if (volunteer.IsFailure)
-            return volunteer.Error.ToErrorList();
-        
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
+
+        var volunteerExistResult = await volunteersRepository.GetById(volunteerId, cancellationToken);
+        if (volunteerExistResult.IsFailure)
+            return volunteerExistResult.Error.ToErrorList();
+
         var speciesId = SpeciesId.Create(command.SpeciesId);
         var breedId = BreedId.Create(command.BreedId);
 
         var speciesQuery = readDbContext.SpeciesRead;
-
         speciesQuery = speciesQuery
-            .Where(s => 
-                s.Id == speciesId && 
+            .Where(s =>
+                s.Id == speciesId &&
                 s.Breeds.Any(b => b.Id == breedId));
-        
+
         if (speciesQuery.Any() is false)
             return Errors.Species.NotFound().ToErrorList();
 
-        var petId = PetId.New();
-        var name = Name.Create(command.Name).Value;
+        var petId = PetId.Create(command.PetId);
+
+        var petResult = volunteerExistResult.Value.GetPetById(petId);
+        if (petResult.IsFailure)
+            return petResult.Error.ToErrorList();
+
+        var petName = Name.Create(command.Name).Value;
+        var speciesBreed = SpeciesBreed.Create(speciesId, breedId).Value;
         var description = Description.Create(command.Description).Value;
-        var healthInformation = HealthInformation.Create(command.HealthInformation).Value;
+        var healthInfo = HealthInformation.Create(command.HealthInformation).Value;
         var address = Address.Create(command.City, command.Street, command.House).Value;
-        var bodySize = BodySize.Create(command.Height, command.Weight).Value;
+        var bodySize = BodySize.Create(command.Weight, command.Height).Value;
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
         var helpStatus = HelpStatus.Create(command.HelpStatus).Value;
-        
+
         var requisites = command.Requisites
             .Select(r => Requisite.Create(r.AccountNumber, r.Title, r.Description).Value)
             .ToList();
-        
-        var speciesBreed = SpeciesBreed.Create(speciesId, breedId);
-        
-        var pet = Pet.Create(
-            petId,
-            name,
-            speciesBreed.Value,
+
+        var updateResult = petResult.Value.Update(
+            petName,
+            speciesBreed,
             description,
             command.Color,
-            healthInformation,
+            healthInfo,
             address,
             bodySize,
             phoneNumber,
@@ -75,20 +76,15 @@ public class AddPetHandler(
             helpStatus,
             requisites);
         
-        if (pet.IsFailure)
-            return pet.Error.ToErrorList();
-        
-        var addPetToVolunteerResult = volunteer.Value.AddPet(pet.Value);
-        if (addPetToVolunteerResult.IsFailure)
-            return addPetToVolunteerResult.Error.ToErrorList();
-        
-        var saveResult = await volunteerRepository.Save(volunteer.Value, cancellationToken);
+        if (updateResult.IsFailure)
+            return updateResult.Error.ToErrorList();
+
+        var saveResult = await volunteersRepository.Save(volunteerExistResult.Value, cancellationToken);
         if (saveResult.IsFailure)
             return saveResult.Error.ToErrorList();
         
-        logger.LogInformation("Added pet with id {petId} to volunteer with id {volunteerId}",
-            petId.Value, command.VolunteerId);
+        logger.LogInformation("Updated pet with id {petId}", petId.Value);
 
-        return pet.Value.Id.Value;
+        return petId.Value;
     }
 }

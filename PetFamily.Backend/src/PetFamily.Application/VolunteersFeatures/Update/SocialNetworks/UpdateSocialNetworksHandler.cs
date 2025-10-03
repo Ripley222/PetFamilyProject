@@ -31,10 +31,12 @@ public class UpdateSocialNetworksHandler(
 
         resultVolunteer.Value.UpdateSocialNetworks(socialNetworks);
 
-        var result = await repository.Save(resultVolunteer.Value, cancellationToken);
+        var saveResult = await repository.Save(resultVolunteer.Value, cancellationToken);
+        if (saveResult.IsFailure)
+            return saveResult.Error.ToErrorList();
         
         logger.LogInformation("Updates social networks volunteer with id {volunteerId}", command.VolunteerId);
 
-        return result;
+        return saveResult.Value;
     }
 }

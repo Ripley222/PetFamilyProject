@@ -9,14 +9,14 @@ using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
+namespace PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddManyFiles;
 
-public class AddPetFileHandler(
-    IVolunteersRepository repository,
+public class AddPetFilesHandler(
+    IVolunteersRepository volunteersRepository,
     IFileProvider fileProvider,
     IValidator<AddPetFileCommand> validator,
-    IMassageChannel<IEnumerable<FileData>>  massageChannel,
-    ILogger<AddPetFileHandler> logger)
+    IMassageChannel<IEnumerable<FileData>> massageChannel,
+    ILogger<AddPetFilesHandler> logger)
 {
     private const string BUCKET_NAME = "photos";
     
@@ -28,15 +28,15 @@ public class AddPetFileHandler(
         if (validationResult.IsValid == false)
             return validationResult.GetErrors();
         
-        var volunteerResult = await repository.GetById(
-            VolunteerId.Create(command.VolunteerId), cancellationToken);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
         
+        var volunteerResult = await volunteersRepository.GetById(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
-        
-        var petExist = volunteerResult.Value.Pets.FirstOrDefault(
-            p => p.Id == PetId.Create(command.PetId));
 
+        var petId = PetId.Create(command.PetId);
+        
+        var petExist = volunteerResult.Value.Pets.FirstOrDefault(p => p.Id == petId);
         if (petExist is null)
             return Errors.Pet.NotFound().ToErrorList();
 
@@ -61,7 +61,6 @@ public class AddPetFileHandler(
             
             return result.Error;
         }
-            
         
         foreach (var file in filesData)
         {
@@ -69,7 +68,9 @@ public class AddPetFileHandler(
             logger.LogInformation("Added file {fileName}", file.FileData.FilePath.Value);
         }
 
-        await repository.Save(volunteerResult.Value, cancellationToken);
+        var saveResult = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        if (saveResult.IsFailure)
+            return saveResult.Error.ToErrorList();
         
         return result;
     }

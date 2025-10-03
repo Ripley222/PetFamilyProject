@@ -5,6 +5,7 @@ using PetFamily.Application.Extensions;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddManyFiles;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -15,7 +16,7 @@ public class GetPetFileLinkHandler(
     IVolunteersRepository repository,
     IFileProvider fileProvider,
     IValidator<GetPetFileLinkCommand> validator,
-    ILogger<AddPetFileHandler> logger)
+    ILogger<AddPetFilesHandler> logger)
 {
     private const string BUCKET_NAME = "photos";
     

@@ -32,6 +32,9 @@ public static class Inject
         services.AddSingleton<IMassageChannel<IEnumerable<FileData>>, 
             InMemoryCleanerMassageChannel<IEnumerable<FileData>>>();
         
+        services.AddSingleton<IMassageChannel<FileData>, 
+            InMemoryCleanerMassageChannel<FileData>>();
+        
         services.AddMinio(configuration);
         
         return services;

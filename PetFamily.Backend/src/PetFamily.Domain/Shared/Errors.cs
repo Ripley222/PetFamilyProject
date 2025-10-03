@@ -51,12 +51,27 @@ public static class Errors
                return Error.NotFound("record.not.found", $"species not found");
           }
      }
-     
-     public static class Breed
+
+     public static class Database
      {
-          public static Error NotFound()
+          public static Error AddError()
           {
-               return Error.NotFound("record.not.found", $"breed not found");
+               return Error.Failure("add.database.error", "error added data to database");
+          }
+          
+          public static Error GetError()
+          {
+               return Error.Failure("get.database.error", "error getting data to database");
+          }
+          
+          public static Error SaveError()
+          {
+               return Error.Failure("save.database.error", "error saving data to database");
+          }
+          
+          public static Error DeleteError()
+          {
+               return Error.Failure("delete.database.error", "error deleting data to database");
           }
      }
 }

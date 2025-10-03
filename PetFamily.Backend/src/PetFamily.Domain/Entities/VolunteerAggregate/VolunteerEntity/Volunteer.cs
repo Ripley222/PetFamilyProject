@@ -12,7 +12,7 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
         public const int MAX_EXPERIENCE = 50;
 
         private bool _isDeleted = false;
-        
+
         private readonly List<Pet> _pets = [];
 
         //ef core ctor
@@ -28,7 +28,7 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             int yearsOfExperience,
             PhoneNumber phoneNumber,
             List<Requisite> requisites,
-            List<SocialNetwork> socials)  : base(id)
+            List<SocialNetwork> socials) : base(id)
         {
             FullName = fullName;
             EmailAddress = emailAddress;
@@ -39,13 +39,13 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             Socials = socials;
         }
 
-        public FullName FullName { get; private set; }
-        public EmailAddress EmailAddress { get; private set; }
-        public Description Description { get; private set; }
-        public int YearsOfExperience { get; private set; }        
-        public PhoneNumber PhoneNumber { get; private set; }
-        public List<Requisite> Requisites { get; private set; }
-        public List<SocialNetwork> Socials { get; private set; }
+        public FullName FullName { get; private set; } = null!;
+        public EmailAddress EmailAddress { get; private set; } = null!;
+        public Description Description { get; private set; } = null!;
+        public int YearsOfExperience { get; private set; }
+        public PhoneNumber PhoneNumber { get; private set; } = null!;
+        public List<Requisite> Requisites { get; private set; } = null!;
+        public List<SocialNetwork> Socials { get; private set; } = null!;
         public IReadOnlyList<Pet> Pets => _pets;
         public int GetNumberOfAnimalsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
         public int GetNumberOfAnimalsLookingHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingHome);
@@ -62,13 +62,13 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             List<SocialNetwork> socials)
         {
             return new Volunteer(
-                volunteerId, 
-                fullName, 
-                emailAddress, 
-                description, 
-                yearsOfExperience, 
+                volunteerId,
+                fullName,
+                emailAddress,
+                description,
+                yearsOfExperience,
                 phoneNumber,
-                requisites, 
+                requisites,
                 socials);
         }
 
@@ -86,21 +86,11 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
             PhoneNumber = phoneNumber;
         }
 
-        public Result<Pet> GetPetById(PetId petId)
-        {
-            var result = _pets.Where(p => p.Id == petId).ToList();
-            
-            if (result.Count is 0)
-                return Result.Failure<Pet>("There is no pet with this id");
-
-            return Result.Success(result.First());
-        }
-
         public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socials)
         {
             Socials = socials.ToList();
         }
-        
+
         public void UpdateRequisites(IEnumerable<Requisite> requisites)
         {
             Requisites = requisites.ToList();
@@ -115,15 +105,25 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
                 pet.Delete();
             }
         }
-        
+
         public void Restore()
         {
             _isDeleted = false;
-            
+
             foreach (var pet in _pets)
             {
                 pet.Restore();
             }
+        }
+
+        public Result<Pet, Error> GetPetById(PetId petId)
+        {
+            var pet = _pets.FirstOrDefault(p => p.Id == petId);
+
+            if (pet is null)
+                return Error.Failure("pet.get", "Pet not found");
+
+            return pet;
         }
 
         public UnitResult<Error> AddPet(Pet pet)
@@ -132,30 +132,49 @@ namespace PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity
                 return Error.Failure("pet.add", "Failed adding pet");
 
             var position = Position.Create(_pets.Count + 1);
-            
+
             pet.SetPosition(position.Value);
-            
+
             _pets.Add(pet);
 
             return UnitResult.Success<Error>();
         }
-        
-        public Result<Guid, Error> MovePet(Pet petToMove, Position newPosition)
+
+        public UnitResult<Error> MovePet(Pet petToMove, Position newPosition)
         {
             if (newPosition.Value > _pets.Count)
                 return Error.Failure("pet.move", "Failed moving pet");
-            
-            var orderPets = _pets.OrderBy(p => p.Position.Value).ToList();
-           
-            orderPets.Remove(petToMove);
-            orderPets.Insert(newPosition.Value - 1, petToMove);
 
-            for (int i = 0; i < orderPets.Count; i++)
-            {
-                orderPets[i].SetPosition(Position.Create(i + 1).Value);
-            }
+            var orderPetsList = _pets.OrderBy(p => p.Position.Value).ToList();
+
+            orderPetsList.Remove(petToMove);
+            orderPetsList.Insert(newPosition.Value - 1, petToMove);
+
+            RecountPositions(ref orderPetsList);
+
+            return UnitResult.Success<Error>();
+        }
+
+        public UnitResult<Error> RemovePet(Pet pet)
+        {
+            if (_pets.Contains(pet) is false)
+                return Error.Failure("pet.remove", "Failed remove pet");
+
+            _pets.Remove(pet);
             
-            return petToMove.Id.Value;
+            var orderPetsList = _pets.OrderBy(p => p.Position.Value).ToList();
+            
+            RecountPositions(ref orderPetsList);
+
+            return UnitResult.Success<Error>();
+        }
+
+        private static void RecountPositions(ref List<Pet> orderPetsList)
+        {
+            for (int i = 0; i < orderPetsList.Count; i++)
+            {
+                orderPetsList[i].SetPosition(Position.Create(i + 1).Value);
+            }
         }
     }
 }

@@ -32,10 +32,12 @@ public class UpdateRequisitesHandler(
         
         resultVolunteer.Value.UpdateRequisites(requisites);
         
-        var result = await repository.Save(resultVolunteer.Value, cancellationToken);
+        var saveResult = await repository.Save(resultVolunteer.Value, cancellationToken);
+        if (saveResult.IsFailure)
+            return saveResult.Error.ToErrorList();
         
         logger.LogInformation("Update requisites volunteer with id {volunteerId}", command.VolunteerId);
 
-        return result;
+        return saveResult.Value;
     }
 }
