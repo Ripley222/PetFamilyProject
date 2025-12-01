@@ -4,32 +4,32 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 
-public class Pet : Entity<PetId>
+public class Pet : Entity<PetId>, IEquatable<Pet>
 {
     private List<FilePath> _files = [];
-    
+
     private bool _isDeleted = false;
-    
+
     //ef core ctor
-    private Pet(PetId id) : base(id) 
+    private Pet(PetId id) : base(id)
     {
     }
 
     private Pet(
-        PetId id, 
-        Name name, 
-        SpeciesBreed speciesBreed, 
-        Description description, 
-        string color, 
+        PetId id,
+        Name name,
+        SpeciesBreed speciesBreed,
+        Description description,
+        string color,
         HealthInformation healthInformation,
-        Address address, 
-        BodySize bodySize, 
+        Address address,
+        BodySize bodySize,
         PhoneNumber phoneNumber,
-        bool isNeutered, 
-        DateOnly dateOfBirth, 
-        bool isVaccinated, 
+        bool isNeutered,
+        DateOnly dateOfBirth,
+        bool isVaccinated,
         HelpStatus helpStatus,
-        List<Requisite> requisites) :  base(id)
+        List<Requisite> requisites) : base(id)
     {
         Name = name;
         SpeciesBreed = speciesBreed;
@@ -83,21 +83,21 @@ public class Pet : Entity<PetId>
     {
         if (string.IsNullOrEmpty(color))
             return Error.Failure("pet.create", "Failed to create pet");
-        
+
         var pet = new Pet(
-            petId, 
-            name, 
-            speciesBreed, 
-            description, 
-            color, 
-            healthInformation, 
+            petId,
+            name,
+            speciesBreed,
+            description,
+            color,
+            healthInformation,
             address,
-            bodySize, 
-            phoneNumber, 
-            isNeutered, 
-            dateOfBirth, 
-            isVaccinated, 
-            helpStatus, 
+            bodySize,
+            phoneNumber,
+            isNeutered,
+            dateOfBirth,
+            isVaccinated,
+            helpStatus,
             requisites);
 
         return pet;
@@ -120,7 +120,7 @@ public class Pet : Entity<PetId>
     {
         if (string.IsNullOrEmpty(color))
             return Error.Failure("pet.update", "Failed to updated pet");
-        
+
         Name = name;
         SpeciesBreed = speciesBreed;
         Description = description;
@@ -152,12 +152,12 @@ public class Pet : Entity<PetId>
     {
         MainFile = mainFile;
     }
-    
+
     public void DeletePhoto(FilePath filePath)
     {
         _files.Remove(filePath);
     }
-    
+
     public void SetPosition(Position position)
     {
         Position = position;
@@ -167,9 +167,32 @@ public class Pet : Entity<PetId>
     {
         _isDeleted = true;
     }
-    
+
     public void Restore()
     {
         _isDeleted = false;
     }
+
+    public bool Equals(Pet? other)
+    {
+        if (other == null) return false;
+
+        return Name == other.Name &&
+               SpeciesBreed == other.SpeciesBreed &&
+               Description == other.Description &&
+               Color == other.Color &&
+               HealthInformation == other.HealthInformation &&
+               Address == other.Address &&
+               BodySize == other.BodySize &&
+               PhoneNumber == other.PhoneNumber &&
+               IsNeutered == other.IsNeutered &&
+               DateOfBirth == other.DateOfBirth &&
+               IsVaccinated == other.IsVaccinated &&
+               HelpStatus == other.HelpStatus &&
+               Requisites.SequenceEqual(other.Requisites);
+    }
+
+    public override bool Equals(object? obj) => Equals(obj as Pet);
+
+    public override int GetHashCode() => Id.GetHashCode();
 }
