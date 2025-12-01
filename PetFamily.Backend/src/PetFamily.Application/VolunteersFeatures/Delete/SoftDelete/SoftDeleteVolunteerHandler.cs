@@ -19,9 +19,7 @@ public class SoftDeleteVolunteerHandler(
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
-        {
             return validationResult.GetErrors();
-        }
 
         var resultVolunteer = await repository.GetById(VolunteerId.Create(command.VolunteerId), cancellationToken);
         if (resultVolunteer.IsFailure)

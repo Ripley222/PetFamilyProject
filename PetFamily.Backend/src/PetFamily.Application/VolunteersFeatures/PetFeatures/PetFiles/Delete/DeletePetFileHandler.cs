@@ -18,7 +18,7 @@ public class DeletePetFileHandler(
 {
     private const string BUCKET_NAME = "photos";
     
-    public async Task<UnitResult<ErrorList>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         DeletePetFileCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -37,18 +37,20 @@ public class DeletePetFileHandler(
             return Errors.Pet.NotFound().ToErrorList();
         
         var extension = Path.GetExtension(command.FileName);
-        var fileName = command.FileName.Replace(extension, string.Empty);
+        var fileName = extension == string.Empty 
+            ? command.FileName
+            : command.FileName.Replace(extension, string.Empty);
         
         var filePath = FilePath.Create(Guid.Parse(fileName), extension);
         if (filePath.IsFailure)
             return filePath.Error.ToErrorList();
         
-        var result = await fileProvider.RemoveFile(
+        var removeResult = await fileProvider.RemoveFile(
             new FileData(filePath.Value, BUCKET_NAME), 
             cancellationToken);
 
-        if (result.IsFailure)
-            return result.Error;
+        if (removeResult.IsFailure)
+            return removeResult.Error;
         
         petExist.DeletePhoto(filePath.Value);
         
@@ -56,6 +58,6 @@ public class DeletePetFileHandler(
         
         logger.LogInformation("Deleting file {fileName}", command.FileName);
 
-        return result;
+        return petExist.Id.Value;
     }
 }

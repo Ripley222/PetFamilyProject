@@ -16,6 +16,9 @@ public class AddPetFileCommandValidation : AbstractValidator<AddPetFileCommand>
         RuleFor(a => a.PetId)
             .NotEmpty()
             .WithError(Errors.General.ValueIsRequired("PetId"));
+        
+        RuleFor(a => a.Files)
+            .NotEmpty();
 
         RuleForEach(a => a.Files)
             .SetValidator(new FileDtoValidator());

@@ -18,15 +18,13 @@ public class UpdateSocialNetworksHandler(
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
-        {
             return validationResult.GetErrors();
-        }
 
         var resultVolunteer = await repository.GetById(VolunteerId.Create(command.VolunteerId), cancellationToken);
         if (resultVolunteer.IsFailure)
             return resultVolunteer.Error.ToErrorList();
 
-        var socialNetworks = 
+        var socialNetworks =
             command.SocialNetworks.Select(dto => SocialNetwork.Create(dto.Title, dto.Link).Value);
 
         resultVolunteer.Value.UpdateSocialNetworks(socialNetworks);
@@ -34,7 +32,7 @@ public class UpdateSocialNetworksHandler(
         var saveResult = await repository.Save(resultVolunteer.Value, cancellationToken);
         if (saveResult.IsFailure)
             return saveResult.Error.ToErrorList();
-        
+
         logger.LogInformation("Updates social networks volunteer with id {volunteerId}", command.VolunteerId);
 
         return saveResult.Value;

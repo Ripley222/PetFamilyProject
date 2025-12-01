@@ -126,7 +126,7 @@ public class VolunteersController : ControllerBase
         [FromServices] AddMainFileHandler handler,
         CancellationToken cancellationToken)
     {
-        var formFileProcessor = new FormFileProcessor();
+        await using var formFileProcessor = new FormFileProcessor();
         var fileDto = formFileProcessor.Process(file);
 
         var command = new AddPetFileCommand(volunteerId, petId, fileDto);
@@ -148,7 +148,7 @@ public class VolunteersController : ControllerBase
         [FromServices] AddPetFilesHandler handler,
         CancellationToken cancellationToken)
     {
-        var formFileProcessor = new FormFileProcessor();
+        await using var formFileProcessor = new FormFileProcessor();
         var filesDto = formFileProcessor.Process(files);
 
         var command = new AddPetFileCommand(volunteerId, petId, filesDto);
@@ -323,7 +323,7 @@ public class VolunteersController : ControllerBase
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        var envelope = Envelope.Ok(result);
+        var envelope = Envelope.Ok(result.Value);
 
         return Ok(envelope);
     }

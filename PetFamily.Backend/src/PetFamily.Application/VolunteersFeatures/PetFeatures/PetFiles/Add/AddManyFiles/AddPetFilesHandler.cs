@@ -65,13 +65,19 @@ public class AddPetFilesHandler(
         foreach (var file in filesData)
         {
             petExist.AddPhoto(file.FileData.FilePath);
+            
             logger.LogInformation("Added file {fileName}", file.FileData.FilePath.Value);
         }
 
         var saveResult = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
         if (saveResult.IsFailure)
+        {
+            // запись данных о путях в Channel
+            await massageChannel.WriteAsync(filesData.Select(f => f.FileData), cancellationToken);
+            
             return saveResult.Error.ToErrorList();
-        
+        }
+
         return result;
     }
 }
