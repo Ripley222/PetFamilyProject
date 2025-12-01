@@ -6,6 +6,7 @@ using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Shared;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Providers;
 
@@ -47,13 +48,14 @@ public class MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logg
     {
         try
         {
-            var statObjectArgs = new StatObjectArgs()
+            var getObjectArgs = new GetObjectArgs()
                 .WithBucket(fileData.BucketName)
-                .WithObject(fileData.FilePath.Value);
+                .WithObject(fileData.FilePath.Value)
+                .WithCallbackStream(_ => { });
 
-            var objectStat = await minioClient.StatObjectAsync(statObjectArgs, cancellationToken);
-            if (objectStat.Size == 0)
-                return Error.Failure("file.get", "FilePath not exist").ToErrorList();
+            var objectStat = await minioClient.CheckObjectAsync(getObjectArgs, cancellationToken);
+            if (objectStat.IsFailure)
+                return objectStat.Error.ToErrorList();
 
             var presignedGetObjectArgs = new PresignedGetObjectArgs()
                 .WithBucket(fileData.BucketName)
@@ -77,20 +79,21 @@ public class MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logg
     {
         try
         {
-            var statObjectArgs = new StatObjectArgs()
+            var getObjectArgs = new GetObjectArgs()
                 .WithBucket(fileData.BucketName)
-                .WithObject(fileData.FilePath.Value);
+                .WithObject(fileData.FilePath.Value)
+                .WithCallbackStream(_ => {});
 
-            var objectStat = await minioClient.StatObjectAsync(statObjectArgs, cancellationToken);
-            if (objectStat is null)
-                return Result.Success<ErrorList>();
+            var objectStat = await minioClient.CheckObjectAsync(getObjectArgs, cancellationToken);
+            if (objectStat.IsFailure)
+                return objectStat.Error.ToErrorList();
 
             var removeObjectArgs = new RemoveObjectArgs()
                 .WithBucket(fileData.BucketName)
                 .WithObject(fileData.FilePath.Value);
 
             await minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
-
+            
             return Result.Success<ErrorList>();
         }
         catch (Exception ex)
@@ -147,8 +150,7 @@ public class MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logg
                 fileData.FileData.FilePath.Value,
                 fileData.FileData.BucketName);
 
-            return Error.Failure("file.upload", "Fail to upload file to minio")
-                .ToErrorList();
+            return Error.Failure("file.upload", "Fail to upload file to minio").ToErrorList();
         }
         finally
         {
