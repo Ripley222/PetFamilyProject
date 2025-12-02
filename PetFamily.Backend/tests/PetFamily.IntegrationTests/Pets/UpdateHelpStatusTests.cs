@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Update.Status;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class UpdateHelpStatusTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(testsFactory)
+public class UpdateHelpStatusTests(WebTestsFactory testsFactory) : PetsEntityFactory(testsFactory)
 {
     [Fact]
     public async Task UpdateHelpStatus_WithValidStatus_ShouldSuccess()
@@ -22,8 +24,8 @@ public class UpdateHelpStatusTests(WebTestsFactory testsFactory) : ExecutePetsHa
         var command = new UpdatePetStatusCommand(volunteer.Id.Value, pet.Id.Value, updatedHelpStatus);
         
         //act
-        var updatedResult = await ExecuteUpdateHelpStatusHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var updatedResult = await ExecuteHandlers<UpdatePetStatusHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(updatedResult.IsSuccess);
@@ -53,8 +55,8 @@ public class UpdateHelpStatusTests(WebTestsFactory testsFactory) : ExecutePetsHa
         var command = new UpdatePetStatusCommand(volunteer.Id.Value, pet.Id.Value, updatedHelpStatus);
         
         //act
-        var updatedResult = await ExecuteUpdateHelpStatusHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var updatedResult = await ExecuteHandlers<UpdatePetStatusHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(updatedResult.IsFailure);

@@ -1,14 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Args;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddMainFile;
+using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Shared;
 using PetFamily.Infrastructure.Extensions;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class AddMainFileTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(testsFactory)
+public class AddMainFileTests(WebTestsFactory testsFactory) : PetsEntityFactory(testsFactory)
 {
     private const string BUCKET_NAME = "photos";
     
@@ -33,8 +37,8 @@ public class AddMainFileTests(WebTestsFactory testsFactory) : ExecutePetsHandler
         var command = new AddPetFileCommand(volunteerForPet.Id.Value, pet.Id.Value, [fileDto]);
 
         //act
-        var result = await ExecuteAddMainFileHandlers(async sut =>
-            await sut.Handler(command, cancellationToken));
+        var result = await ExecuteHandlers<AddMainFileHandler, Result<FilePath, ErrorList>>(
+            async sut => await sut.Handler(command, cancellationToken));
 
         //assert
         Assert.True(result.IsSuccess);
@@ -81,8 +85,8 @@ public class AddMainFileTests(WebTestsFactory testsFactory) : ExecutePetsHandler
         var command = new AddPetFileCommand(volunteerForPet.Id.Value, pet.Id.Value, [fileDto]);
 
         //act
-        var result = await ExecuteAddMainFileHandlers(async sut =>
-            await sut.Handler(command, cancellationToken));
+        var result = await ExecuteHandlers<AddMainFileHandler, Result<FilePath, ErrorList>>(
+            async sut => await sut.Handler(command, cancellationToken));
 
         //assert
         Assert.True(result.IsFailure);

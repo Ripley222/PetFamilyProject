@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Update.FullInfo;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class UpdateFullInfoTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(testsFactory)
+public class UpdateFullInfoTests(WebTestsFactory testsFactory) : PetsEntityFactory(testsFactory)
 {
     [Fact]
     public async Task UpdateFullInfo_WithValidData_ShouldSuccess()
@@ -65,8 +67,8 @@ public class UpdateFullInfoTests(WebTestsFactory testsFactory) : ExecutePetsHand
             updatedRequisites);
 
         //act
-        var updatedResult = await ExecuteUpdateFullInfoHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var updatedResult = await ExecuteHandlers<UpdatePetHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(updatedResult.IsSuccess);
@@ -153,8 +155,8 @@ public class UpdateFullInfoTests(WebTestsFactory testsFactory) : ExecutePetsHand
             updatedRequisites);
 
         //act
-        var updatedResult = await ExecuteUpdateFullInfoHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var updatedResult = await ExecuteHandlers<UpdatePetHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(updatedResult.IsFailure);

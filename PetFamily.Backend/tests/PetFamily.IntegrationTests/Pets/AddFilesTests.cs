@@ -1,14 +1,18 @@
 ﻿using System.Reactive.Linq;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Args;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddManyFiles;
+using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class AddFilesTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(testsFactory), IAsyncDisposable
+public class AddFilesTests(WebTestsFactory testsFactory) : PetsEntityFactory(testsFactory), IAsyncDisposable
 {
     private readonly List<FileDto> _filesDto = [];
 
@@ -35,8 +39,8 @@ public class AddFilesTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(t
         var command = new AddPetFileCommand(volunteer.Id.Value, pet.Id.Value, _filesDto);
 
         //act
-        var addFilesResult = await ExecuteAddFilesHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var addFilesResult = await ExecuteHandlers<AddPetFilesHandler, Result<IReadOnlyList<FilePath>, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(addFilesResult.IsSuccess);
@@ -76,8 +80,8 @@ public class AddFilesTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(t
         var command = new AddPetFileCommand(volunteerForPet.Id.Value, pet.Id.Value, []);
 
         //act
-        var addFilesResult = await ExecuteAddFilesHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var addFilesResult = await ExecuteHandlers<AddPetFilesHandler, Result<IReadOnlyList<FilePath>, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(addFilesResult.IsFailure);

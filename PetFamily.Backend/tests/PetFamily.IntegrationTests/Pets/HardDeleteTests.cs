@@ -1,16 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Args;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.HardDelete;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Shared;
 using PetFamily.Infrastructure.Extensions;
 using PetFamily.Infrastructure.Providers;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class HardDeleteTests(WebTestsFactory webTestsFactory) : ExecutePetsHandlers(webTestsFactory)
+public class HardDeleteTests(WebTestsFactory webTestsFactory) : PetsEntityFactory(webTestsFactory)
 {
     private const string BUCKET_NAME = "photos";
     
@@ -29,8 +32,8 @@ public class HardDeleteTests(WebTestsFactory webTestsFactory) : ExecutePetsHandl
         var command = new DeletePetCommand(volunteer.Id.Value, pet.Id.Value);
 
         //act
-        var deletingResult = await ExecuteHardDeleteHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var deletingResult = await ExecuteHandlers<HardDeletePetHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(deletingResult.IsSuccess);
@@ -88,8 +91,8 @@ public class HardDeleteTests(WebTestsFactory webTestsFactory) : ExecutePetsHandl
         var command = new DeletePetCommand(volunteer.Id.Value, pet.Id.Value);
 
         //act
-        var deletingResult = await ExecuteHardDeleteHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var deletingResult = await ExecuteHandlers<HardDeletePetHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(deletingResult.IsSuccess);

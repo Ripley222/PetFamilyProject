@@ -1,12 +1,14 @@
-﻿using Minio.DataModel.Args;
+﻿using CSharpFunctionalExtensions;
+using Minio.DataModel.Args;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class GetFileLinkTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(testsFactory)
+public class GetFileLinkTests(WebTestsFactory testsFactory) : PetsEntityFactory(testsFactory)
 {
     private const string BUCKET_NAME = "photos";
     
@@ -44,8 +46,8 @@ public class GetFileLinkTests(WebTestsFactory testsFactory) : ExecutePetsHandler
         var command = new GetPetFileLinkCommand(volunteerForPet.Id.Value, pet.Id.Value, fileName.ToString());
 
         //act
-        var getLinkResult = await ExecuteGetFileLinkHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var getLinkResult = await ExecuteHandlers<GetPetFileLinkHandler, Result<string, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(getLinkResult.IsSuccess);
@@ -72,8 +74,8 @@ public class GetFileLinkTests(WebTestsFactory testsFactory) : ExecutePetsHandler
         var command = new GetPetFileLinkCommand(volunteerForPet.Id.Value, pet.Id.Value, fileName.ToString());
 
         //act
-        var getLinkResult = await ExecuteGetFileLinkHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var getLinkResult = await ExecuteHandlers<GetPetFileLinkHandler, Result<string, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(getLinkResult.IsFailure);

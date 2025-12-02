@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class CreateTests(WebTestsFactory webTestsFactory) : ExecutePetsHandlers(webTestsFactory)
+public class CreateTests(WebTestsFactory webTestsFactory) : PetsEntityFactory(webTestsFactory)
 {
     [Fact]
     public async Task CreatePet_WithValidData_ShouldSuccess()
@@ -44,7 +46,8 @@ public class CreateTests(WebTestsFactory webTestsFactory) : ExecutePetsHandlers(
         };
 
         //act
-        var newPetIdResult = await ExecuteCreateHandlers(async sut =>
+        var newPetIdResult = await ExecuteHandlers<AddPetHandler, Result<Guid, ErrorList>>(
+            async sut =>
         {
             var command = new AddPetCommand(
                 volunteerForPet.Id.Value,
@@ -138,10 +141,10 @@ public class CreateTests(WebTestsFactory webTestsFactory) : ExecutePetsHandlers(
             requisites);
 
         //act
-        var petIdResult = await ExecuteCreateHandlers(
+        var petIdResult = await ExecuteHandlers<AddPetHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
         
-        var duplicatePetIdResult = await ExecuteCreateHandlers(
+        var duplicatePetIdResult = await ExecuteHandlers<AddPetHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
 
         //assert
@@ -215,7 +218,7 @@ public class CreateTests(WebTestsFactory webTestsFactory) : ExecutePetsHandlers(
             requisites);
 
         //act
-        var petIdResult = await ExecuteCreateHandlers(
+        var petIdResult = await ExecuteHandlers<AddPetHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
 
         //assert

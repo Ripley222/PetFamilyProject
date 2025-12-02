@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Args;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Shared;
 using PetFamily.Infrastructure.Extensions;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class DeletePetFileTests(WebTestsFactory testsFactory) : ExecutePetsHandlers(testsFactory)
+public class DeletePetFileTests(WebTestsFactory testsFactory) : PetsEntityFactory(testsFactory)
 {
     private const string BUCKET_NAME = "photos";
     
@@ -46,8 +48,8 @@ public class DeletePetFileTests(WebTestsFactory testsFactory) : ExecutePetsHandl
         var command = new DeletePetFileCommand(volunteerForPet.Id.Value, pet.Id.Value, fileName.ToString());
 
         //act
-        var removeFileResult = await ExecuteRemoveFileHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var removeFileResult = await ExecuteHandlers<DeletePetFileHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(removeFileResult.IsSuccess);
@@ -110,8 +112,8 @@ public class DeletePetFileTests(WebTestsFactory testsFactory) : ExecutePetsHandl
         var command = new DeletePetFileCommand(volunteerForPet.Id.Value, pet.Id.Value, string.Empty);
 
         //act
-        var removeFileResult = await ExecuteRemoveFileHandlers(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var removeFileResult = await ExecuteHandlers<DeletePetFileHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(removeFileResult.IsFailure);

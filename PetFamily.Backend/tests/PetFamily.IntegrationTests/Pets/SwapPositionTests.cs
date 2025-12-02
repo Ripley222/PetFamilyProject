@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Pets;
 
-public class SwapPositionTests(WebTestsFactory webTestsFactory) : ExecutePetsHandlers(webTestsFactory)
+public class SwapPositionTests(WebTestsFactory webTestsFactory) : PetsEntityFactory(webTestsFactory)
 {
     [Fact]
     public async Task MovePet_WithValidData_ShouldSuccess()
@@ -31,7 +33,7 @@ public class SwapPositionTests(WebTestsFactory webTestsFactory) : ExecutePetsHan
             firstPosition);
 
         //act
-        var petIdResult = await ExecuteMoveHandlers(
+        var petIdResult = await ExecuteHandlers<MovePetHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
 
         //assert
@@ -83,7 +85,7 @@ public class SwapPositionTests(WebTestsFactory webTestsFactory) : ExecutePetsHan
             fourthPosition);
 
         //act
-        var petIdResult = await ExecuteMoveHandlers(
+        var petIdResult = await ExecuteHandlers<MovePetHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
 
         //assert
