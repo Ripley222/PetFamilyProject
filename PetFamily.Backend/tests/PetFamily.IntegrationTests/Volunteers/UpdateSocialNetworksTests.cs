@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.Update.SocialNetworks;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class UpdateSocialNetworksTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(factory)
+public class UpdateSocialNetworksTests(WebTestsFactory factory) : VolunteersEntityFactory(factory)
 {
     [Fact]
     public async Task UpdateSocialNetworks_WithValidData_ShouldSuccess()
@@ -35,8 +36,8 @@ public class UpdateSocialNetworksTests(WebTestsFactory factory) : ExecuteVolunte
         var command = new UpdateSocialNetworksCommand(volunteer.Id.Value, newSocialNetworks);
 
         //act
-        var volunteerIdResult =
-            await ExecuteUpdateSocialNetworksHandler(async sut => await sut.Handle(command, cancellationToken));
+        var volunteerIdResult = await ExecuteHandlers<UpdateSocialNetworksHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(volunteerIdResult.IsSuccess);
@@ -73,8 +74,8 @@ public class UpdateSocialNetworksTests(WebTestsFactory factory) : ExecuteVolunte
         var command = new UpdateSocialNetworksCommand(volunteer.Id.Value, newSocialNetworks);
 
         //act
-        var volunteerIdResult =
-            await ExecuteUpdateSocialNetworksHandler(async sut => await sut.Handle(command, cancellationToken));
+        var volunteerIdResult = await ExecuteHandlers<UpdateSocialNetworksHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(volunteerIdResult.IsFailure);

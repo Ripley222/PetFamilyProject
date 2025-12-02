@@ -1,13 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.Create;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class CreateTests(WebTestsFactory webTestsFactory) : ExecuteVolunteersHandlers(webTestsFactory)
+public class CreateTests(WebTestsFactory webTestsFactory) : VolunteersEntityFactory(webTestsFactory)
 {
     [Fact]
     public async Task CreateVolunteer_WithValidData_ShouldSuccess()
@@ -37,7 +39,7 @@ public class CreateTests(WebTestsFactory webTestsFactory) : ExecuteVolunteersHan
         var cancellationToken = CancellationToken.None;
 
         //act
-        var volunteerIdResult = await ExecuteCreateHandler(async sut =>
+        var volunteerIdResult = await ExecuteHandlers<CreateVolunteerHandler, Result<Guid, ErrorList>>(async sut =>
         {
             var command = new CreateVolunteerCommand(
                 "test",
@@ -97,7 +99,7 @@ public class CreateTests(WebTestsFactory webTestsFactory) : ExecuteVolunteersHan
         var cancellationToken = CancellationToken.None;
 
         //act
-        await ExecuteCreateHandler(sut =>
+        await ExecuteHandlers<CreateVolunteerHandler, Result<Guid, ErrorList>>(sut =>
         {
             var command = new CreateVolunteerCommand(
                 "test",
@@ -113,7 +115,7 @@ public class CreateTests(WebTestsFactory webTestsFactory) : ExecuteVolunteersHan
             return sut.Handle(command, cancellationToken);
         });
         
-        var volunteerResultWithError = await ExecuteCreateHandler(sut =>
+        var volunteerResultWithError = await ExecuteHandlers<CreateVolunteerHandler, Result<Guid, ErrorList>>(sut =>
         {
             var command = new CreateVolunteerCommand(
                 "test",

@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.Delete;
+using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class SoftDeleteTests(WebTestsFactory webTestsFactory) : ExecuteVolunteersHandlers(webTestsFactory)
+public class SoftDeleteTests(WebTestsFactory webTestsFactory) : VolunteersEntityFactory(webTestsFactory)
 {
     [Fact]
     public async Task SoftDelete_WithValidData_ShouldSuccess()
@@ -19,8 +22,8 @@ public class SoftDeleteTests(WebTestsFactory webTestsFactory) : ExecuteVolunteer
         var command = new DeleteVolunteerCommand(volunteer.Id.Value);
 
         //act
-        var deletionResult = await ExecuteSoftDeleteHandler(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var deletionResult = await ExecuteHandlers<SoftDeleteVolunteerHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(deletionResult.IsSuccess);
@@ -48,8 +51,8 @@ public class SoftDeleteTests(WebTestsFactory webTestsFactory) : ExecuteVolunteer
         var command = new DeleteVolunteerCommand(invalidId.Value);
 
         //act
-        var deletionResult = await ExecuteSoftDeleteHandler(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var deletionResult = await ExecuteHandlers<SoftDeleteVolunteerHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(deletionResult.IsFailure);

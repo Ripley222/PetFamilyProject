@@ -1,12 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.Update.Requisites;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class UpdateRequisitesTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(factory)
+public class UpdateRequisitesTests(WebTestsFactory factory) : VolunteersEntityFactory(factory)
 {
     [Fact]
     public async Task UpdateRequisitesInfo_WithValidData_ShouldSuccess()
@@ -35,7 +37,7 @@ public class UpdateRequisitesTests(WebTestsFactory factory) : ExecuteVolunteersH
         var command = new UpdateRequisitesCommand(volunteer.Id.Value, newRequisites);
 
         //act
-        var volunteerIdResult = await ExecuteUpdateRequisitesHandler(
+        var volunteerIdResult = await ExecuteHandlers<UpdateRequisitesHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
 
         //assert
@@ -80,7 +82,7 @@ public class UpdateRequisitesTests(WebTestsFactory factory) : ExecuteVolunteersH
         var command = new UpdateRequisitesCommand(volunteer.Id.Value, newRequisites);
 
         //act
-        var volunteerIdResult = await ExecuteUpdateRequisitesHandler(
+        var volunteerIdResult = await ExecuteHandlers<UpdateRequisitesHandler, Result<Guid, ErrorList>>(
             async sut => await sut.Handle(command, cancellationToken));
 
         //assert

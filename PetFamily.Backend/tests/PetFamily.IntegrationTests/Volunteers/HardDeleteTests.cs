@@ -1,12 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.Delete;
+using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class HardDeleteTests(WebTestsFactory webTestsFactory) : ExecuteVolunteersHandlers(webTestsFactory)
+public class HardDeleteTests(WebTestsFactory webTestsFactory) : VolunteersEntityFactory(webTestsFactory)
 {
     [Fact]
     public async Task HardDelete_WithValidData_ShouldSuccess()
@@ -19,8 +22,8 @@ public class HardDeleteTests(WebTestsFactory webTestsFactory) : ExecuteVolunteer
         var command = new DeleteVolunteerCommand(firstVolunteer.Id.Value);
 
         //act
-        var deletionResult = await ExecuteHardDeleteHandler(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var deletionResult = await ExecuteHandlers<HardDeleteVolunteerHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(deletionResult.IsSuccess);
@@ -47,8 +50,8 @@ public class HardDeleteTests(WebTestsFactory webTestsFactory) : ExecuteVolunteer
         var command = new DeleteVolunteerCommand(invalidId.Value);
 
         //act
-        var deletionResult = await ExecuteHardDeleteHandler(async sut =>
-            await sut.Handle(command, cancellationToken));
+        var deletionResult = await ExecuteHandlers<HardDeleteVolunteerHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(deletionResult.IsFailure);

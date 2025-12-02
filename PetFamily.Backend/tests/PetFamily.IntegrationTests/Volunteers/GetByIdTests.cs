@@ -1,10 +1,13 @@
-﻿using PetFamily.Application.VolunteersFeatures.GetById;
-using PetFamily.IntegrationTests.Handlers;
+﻿using CSharpFunctionalExtensions;
+using PetFamily.Application.VolunteersFeatures.DTOs;
+using PetFamily.Application.VolunteersFeatures.GetById;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class GetByIdTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(factory)
+public class GetByIdTests(WebTestsFactory factory) : VolunteersEntityFactory(factory)
 {
     [Fact]
     public async Task GetById_WithValidId_ShouldSuccess()
@@ -17,7 +20,7 @@ public class GetByIdTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(f
         var query = new GetVolunteersByIdQuery(volunteer.Id.Value);
         
         //act
-        var volunteerResult = await ExecuteGetByIdHandler(
+        var volunteerResult = await ExecuteHandlers<GetVolunteersByIdHandler, Result<VolunteerDto?, ErrorList>>(
             async sut => await sut.Handle(query, cancellationToken));
 
         //assert
@@ -39,7 +42,7 @@ public class GetByIdTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(f
         var query = new GetVolunteersByIdQuery(invalidId);
         
         //act
-        var volunteerResult = await ExecuteGetByIdHandler(
+        var volunteerResult = await ExecuteHandlers<GetVolunteersByIdHandler, Result<VolunteerDto?, ErrorList>>(
             async sut => await sut.Handle(query, cancellationToken));
 
         //assert

@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.VolunteersFeatures.Update.MainInfo;
-using PetFamily.IntegrationTests.Handlers;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class UpdateMainInfoTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(factory)
+public class UpdateMainInfoTests(WebTestsFactory factory) : VolunteersEntityFactory(factory)
 {
     [Fact]
     public async Task UpdateMainInfo_WithValidData_ShouldSuccess()
@@ -34,8 +36,8 @@ public class UpdateMainInfoTests(WebTestsFactory factory) : ExecuteVolunteersHan
             newPhoneNumber);
 
         //act
-        var volunteerIdResult =
-            await ExecuteUpdateMainInfoHandler(async sut => await sut.Handle(command, cancellationToken));
+        var volunteerIdResult = await ExecuteHandlers<UpdateMainInfoHandler, Result<Guid, ErrorList>>(
+                async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(volunteerIdResult.IsSuccess);
@@ -83,8 +85,8 @@ public class UpdateMainInfoTests(WebTestsFactory factory) : ExecuteVolunteersHan
             newPhoneNumber);
 
         //act
-        var volunteerIdResult =
-            await ExecuteUpdateMainInfoHandler(async sut => await sut.Handle(command, cancellationToken));
+        var volunteerIdResult = await ExecuteHandlers<UpdateMainInfoHandler, Result<Guid, ErrorList>>(
+            async sut => await sut.Handle(command, cancellationToken));
 
         //assert
         Assert.True(volunteerIdResult.IsFailure);

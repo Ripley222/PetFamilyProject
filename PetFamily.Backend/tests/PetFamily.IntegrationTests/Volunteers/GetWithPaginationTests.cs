@@ -1,10 +1,13 @@
-﻿using PetFamily.Application.VolunteersFeatures.GetWithPagination;
-using PetFamily.IntegrationTests.Handlers;
+﻿using CSharpFunctionalExtensions;
+using PetFamily.Application.VolunteersFeatures.DTOs;
+using PetFamily.Application.VolunteersFeatures.GetWithPagination;
+using PetFamily.Domain.Shared;
+using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
-public class GetWithPaginationTests(WebTestsFactory factory) : ExecuteVolunteersHandlers(factory)
+public class GetWithPaginationTests(WebTestsFactory factory) : VolunteersEntityFactory(factory)
 {
     [Fact]
     public async Task GetWithPagination_WithValidData_ShouldSuccess()
@@ -23,7 +26,7 @@ public class GetWithPaginationTests(WebTestsFactory factory) : ExecuteVolunteers
         await CreateVolunteer(cancellationToken);
 
         //act
-        var volunteersResult = await ExecuteGetWithPaginationHandler(
+        var volunteersResult = await ExecuteHandlers<GetVolunteersHandler, Result<GetVolunteersDto?, ErrorList>>(
             async sut => await sut.Handle(query, cancellationToken));
 
         //assert
