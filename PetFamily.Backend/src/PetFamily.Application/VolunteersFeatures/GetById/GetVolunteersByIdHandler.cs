@@ -11,13 +11,13 @@ namespace PetFamily.Application.VolunteersFeatures.GetById;
 
 public class GetVolunteersByIdHandler(
     IReadDbContext readDbContext,
-    IValidator<GetVolunteersByIdQuery> getVolunteersByIdCommandValidator)
+    IValidator<GetVolunteersByIdQuery> getVolunteersByIdQueryValidator)
 {
     public async Task<Result<VolunteerDto?, ErrorList>> Handle(
         GetVolunteersByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var validationResult = await getVolunteersByIdCommandValidator.ValidateAsync(query, cancellationToken);
+        var validationResult = await getVolunteersByIdQueryValidator.ValidateAsync(query, cancellationToken);
         if (validationResult.IsValid is false)
             return validationResult.GetErrors();
 

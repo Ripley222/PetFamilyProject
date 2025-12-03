@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.Debug()
-    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq") 
+    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq")
                  ?? throw new ArgumentNullException(null, "Seq connection string not found."))
     .Enrich.WithThreadId()
     .Enrich.WithEnvironmentName()
@@ -54,3 +54,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+}

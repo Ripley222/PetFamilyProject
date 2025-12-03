@@ -19,9 +19,7 @@ public class UpdateRequisitesHandler(
     {
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
-        {
             return validationResult.GetErrors();
-        }
 
         var resultVolunteer = await repository.GetById(VolunteerId.Create(command.VolunteerId), cancellationToken);
         if (resultVolunteer.IsFailure)
@@ -29,13 +27,13 @@ public class UpdateRequisitesHandler(
 
         var requisites = command.Requisites.Select(x =>
             Requisite.Create(x.AccountNumber, x.Title, x.Description).Value);
-        
+
         resultVolunteer.Value.UpdateRequisites(requisites);
-        
+
         var saveResult = await repository.Save(resultVolunteer.Value, cancellationToken);
         if (saveResult.IsFailure)
             return saveResult.Error.ToErrorList();
-        
+
         logger.LogInformation("Update requisites volunteer with id {volunteerId}", command.VolunteerId);
 
         return saveResult.Value;

@@ -39,7 +39,9 @@ public class GetPetFileLinkHandler(
             return Errors.Pet.NotFound().ToErrorList();
         
         var extension = Path.GetExtension(command.FileName);
-        var fileName = command.FileName.Replace(extension, string.Empty);
+        var fileName = extension == string.Empty 
+            ? command.FileName 
+            : command.FileName.Replace(extension, string.Empty);
         
         var fileData = new FileData(
             FilePath.Create(Guid.Parse(fileName), extension).Value, 

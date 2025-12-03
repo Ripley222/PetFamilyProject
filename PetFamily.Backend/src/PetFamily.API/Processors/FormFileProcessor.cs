@@ -35,5 +35,7 @@ public class FormFileProcessor : IAsyncDisposable
         {
             await fileDto.Stream.DisposeAsync();
         }
+        
+        GC.SuppressFinalize(this);
     }
 }

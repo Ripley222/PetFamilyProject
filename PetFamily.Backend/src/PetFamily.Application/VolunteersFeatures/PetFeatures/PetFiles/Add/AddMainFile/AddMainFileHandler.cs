@@ -63,13 +63,23 @@ public class AddMainFileHandler(
 
         var mainFile = MainFile.Create(filePath.Value.Value);
         if (mainFile.IsFailure)
+        {
+            // запись данных о пути в Channel
+            await massageChannel.WriteAsync(fileContent.FileData, cancellationToken);
+            
             return mainFile.Error.ToErrorList();
-        
+        }
+
         petExistResult.Value.SetMainPhoto(mainFile.Value);
         
         var saveResult = await volunteersRepository.Save(volunteerExistResult.Value, cancellationToken);
         if (saveResult.IsFailure)
+        {
+            // запись данных о пути в Channel
+            await massageChannel.WriteAsync(fileContent.FileData, cancellationToken);
+            
             return saveResult.Error.ToErrorList();
+        }
         
         logger.LogInformation("Added main file for pet with id {petId}", petId.Value);
 
