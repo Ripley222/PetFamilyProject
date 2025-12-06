@@ -10,11 +10,11 @@ public class AddPetFileCommandValidation : AbstractValidator<AddPetFileCommand>
     public AddPetFileCommandValidation()
     {
         RuleFor(a => a.VolunteerId)
-            .NotEmpty()
+            .Must(i => i != Guid.Empty)
             .WithError(Errors.General.ValueIsRequired("VolunteerId"));
         
         RuleFor(a => a.PetId)
-            .NotEmpty()
+            .Must(i => i != Guid.Empty)
             .WithError(Errors.General.ValueIsRequired("PetId"));
         
         RuleFor(a => a.Files)

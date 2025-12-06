@@ -48,15 +48,6 @@ public class MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logg
     {
         try
         {
-            var getObjectArgs = new GetObjectArgs()
-                .WithBucket(fileData.BucketName)
-                .WithObject(fileData.FilePath.Value)
-                .WithCallbackStream(_ => { });
-
-            var objectStat = await minioClient.CheckObjectAsync(getObjectArgs, cancellationToken);
-            if (objectStat.IsFailure)
-                return objectStat.Error.ToErrorList();
-
             var presignedGetObjectArgs = new PresignedGetObjectArgs()
                 .WithBucket(fileData.BucketName)
                 .WithObject(fileData.FilePath.Value)

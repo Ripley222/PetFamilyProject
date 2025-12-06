@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
@@ -64,6 +65,8 @@ public class Pet : Entity<PetId>, IEquatable<Pet>
     public Position Position { get; private set; } = null!;
     public MainFile MainFile { get; private set; }
     public IReadOnlyList<FilePath> Files => _files;
+    
+    public VolunteerId VolunteerId { get; private set; } = null!;
 
     public static Result<Pet, Error> Create(
         PetId petId,

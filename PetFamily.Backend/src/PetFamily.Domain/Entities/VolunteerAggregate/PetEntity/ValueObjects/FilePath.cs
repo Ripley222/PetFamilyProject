@@ -1,7 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using PetFamily.Domain.Shared;
-
-namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+﻿namespace PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 
 public record FilePath
 {
@@ -12,8 +9,16 @@ public record FilePath
         Value = value;
     }
 
-    public static Result<FilePath, Error> Create(Guid path, string extension)
+    public static FilePath Create(Guid path, string extension)
     {
         return new FilePath(path + extension);
+    }
+    
+    public static FilePath ParseOrGenerate(string? fileName)
+    {
+        if (string.IsNullOrWhiteSpace(fileName))
+            return new FilePath(Guid.NewGuid().ToString());
+        
+        return new FilePath(Path.GetFileNameWithoutExtension(fileName) + Path.GetExtension(fileName));
     }
 }

@@ -9,7 +9,10 @@ public class DeleteSpeciesCommandValidator : AbstractValidator<DeleteSpeciesComm
     public DeleteSpeciesCommandValidator()
     {
         RuleFor(x => x.SpeciesId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("SpeciesId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "species.id",
+                "SpeciesId cannot be empty",
+                "SpeciesId"));
     }   
 }

@@ -9,7 +9,10 @@ public class DeleteVolunteerCommandValidator : AbstractValidator<DeleteVolunteer
     public DeleteVolunteerCommandValidator()
     {
         RuleFor(d => d.VolunteerId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("VolunteerId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "volunteer.id",
+                "VolunteerId cannot be empty",
+                "VolunteerId"));
     }
 }

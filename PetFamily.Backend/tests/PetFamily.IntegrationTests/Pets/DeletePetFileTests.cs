@@ -25,7 +25,7 @@ public class DeletePetFileTests(WebTestsFactory testsFactory) : PetsEntityFactor
         using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(fileContent));
         
         var pet = await CreatePet("test-pet", cancellationToken);
-        pet.AddPhoto(FilePath.Create(fileName, "").Value);
+        pet.AddPhoto(FilePath.Create(fileName, ""));
         
         var volunteerForPet = await CreateVolunteer([pet], cancellationToken);
 
@@ -87,7 +87,7 @@ public class DeletePetFileTests(WebTestsFactory testsFactory) : PetsEntityFactor
         var fileContent = "Test file content";
         
         var pet = await CreatePet("test-pet", cancellationToken);
-        pet.AddPhoto(FilePath.Create(fileName, "").Value);
+        pet.AddPhoto(FilePath.Create(fileName, ""));
         
         var volunteerForPet = await CreateVolunteer([pet], cancellationToken);
 

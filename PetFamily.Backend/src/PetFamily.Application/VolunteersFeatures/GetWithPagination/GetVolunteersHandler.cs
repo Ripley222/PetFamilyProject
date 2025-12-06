@@ -12,7 +12,7 @@ public class GetVolunteersHandler(
     IReadDbContext readDbContext,
     IValidator<GetVolunteersQuery> validator)
 {
-    public async Task<Result<GetVolunteersDto?, ErrorList>> Handle(
+    public async Task<Result<GetVolunteersDto, ErrorList>> Handle(
         GetVolunteersQuery query,
         CancellationToken cancellationToken)
     {
@@ -35,9 +35,21 @@ public class GetVolunteersHandler(
                 v.Description.Value,
                 v.YearsOfExperience,
                 v.PhoneNumber.Value,
-                v.Requisites,
-                v.Socials))
+                v.Requisites.Select(r => new RequisitesDto
+                {
+                    AccountNumber = r.AccountNumber,
+                    Description = r.Description,
+                    Title = r.Title
+                }),
+                v.Socials.Select(s => new SocialNetworksDto
+                {
+                    Link = s.Link,
+                    Title = s.Title
+                })))
             .ToListAsync(cancellationToken);
+        
+        if (volunteers.Count == 0)
+            return Errors.Volunteer.NotFound().ToErrorList();
 
         return new GetVolunteersDto(volunteers);
     }

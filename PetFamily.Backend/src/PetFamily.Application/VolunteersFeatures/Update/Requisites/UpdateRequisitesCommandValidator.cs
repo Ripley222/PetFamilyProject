@@ -9,7 +9,12 @@ public class UpdateRequisitesCommandValidator : AbstractValidator<UpdateRequisit
 {
     public UpdateRequisitesCommandValidator()
     {
-        RuleFor(u => u.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(u => u.VolunteerId)
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "volunteer.id",
+                "VolunteerId cannot be empty",
+                "VolunteerId"));
         
         RuleForEach(u => u.Requisites)
             .SetValidator(new CreateRequisitesDtoValidator());
