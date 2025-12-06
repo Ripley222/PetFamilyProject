@@ -10,8 +10,11 @@ public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSoci
     public UpdateSocialNetworksCommandValidator()
     {
         RuleFor(u => u.VolunteerId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired());
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "volunteer.id",
+                "VolunteerId cannot be empty",
+                "VolunteerId"));
 
         RuleForEach(u => u.SocialNetworks)
             .SetValidator(new CreateSocialNetworksDtoValidator());

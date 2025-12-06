@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Messaging;
+using PetFamily.Application.Options;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -14,12 +15,11 @@ namespace PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddM
 public class AddPetFilesHandler(
     IVolunteersRepository volunteersRepository,
     IFileProvider fileProvider,
+    IMinioBucketOptions bucketOptions,
     IValidator<AddPetFileCommand> validator,
     IMassageChannel<IEnumerable<FileData>> massageChannel,
     ILogger<AddPetFilesHandler> logger)
 {
-    private const string BUCKET_NAME = "photos";
-    
     public async Task<Result<IReadOnlyList<FilePath>, ErrorList>> Handle(
         AddPetFileCommand command,
         CancellationToken cancellationToken = default)
@@ -46,10 +46,8 @@ public class AddPetFilesHandler(
             var extension = Path.GetExtension(file.FileName);
 
             var filePath = FilePath.Create(Guid.NewGuid(), extension);
-            if (filePath.IsFailure)
-                return filePath.Error.ToErrorList();
 
-            var fileContent = new StreamFileData(file.Stream, new FileData(filePath.Value, BUCKET_NAME));
+            var fileContent = new StreamFileData(file.Stream, new FileData(filePath, bucketOptions.BucketPhotos));
             filesData.Add(fileContent);
         }
         

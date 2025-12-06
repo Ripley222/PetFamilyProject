@@ -9,7 +9,10 @@ public class DeleteBreedsCommandValidator : AbstractValidator<DeleteBreedsComman
     public DeleteBreedsCommandValidator()
     {
         RuleFor(d => d.BreedId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("BreedId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "breed.id",
+                "BreedId cannot be empty",
+                "BreedId"));
     }
 }

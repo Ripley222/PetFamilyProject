@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.FileProvider;
+using PetFamily.Application.Options;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -13,11 +14,10 @@ namespace PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
 public class DeletePetFileHandler(
     IFileProvider fileProvider,
     IVolunteersRepository repository,
+    IMinioBucketOptions bucketOptions,
     IValidator<DeletePetFileCommand> validator,
     ILogger<DeletePetFileHandler> logger)
 {
-    private const string BUCKET_NAME = "photos";
-    
     public async Task<Result<Guid, ErrorList>> Handle(
         DeletePetFileCommand command,
         CancellationToken cancellationToken = default)
@@ -42,17 +42,15 @@ public class DeletePetFileHandler(
             : command.FileName.Replace(extension, string.Empty);
         
         var filePath = FilePath.Create(Guid.Parse(fileName), extension);
-        if (filePath.IsFailure)
-            return filePath.Error.ToErrorList();
         
         var removeResult = await fileProvider.RemoveFile(
-            new FileData(filePath.Value, BUCKET_NAME), 
+            new FileData(filePath, bucketOptions.BucketPhotos), 
             cancellationToken);
 
         if (removeResult.IsFailure)
             return removeResult.Error;
         
-        petExist.DeletePhoto(filePath.Value);
+        petExist.DeletePhoto(filePath);
         
         await repository.Save(volunteerResult.Value, cancellationToken);
         

@@ -36,6 +36,5 @@ public class GetPetsQueryValidator : AbstractValidator<GetPetsQuery>
                 "page.size.validation",
                 "Page size must be greater than zero and less than thirty",
                 "PageSize"));
-        ;
     }
 }

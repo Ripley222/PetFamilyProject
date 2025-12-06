@@ -9,11 +9,17 @@ public class DeletePetCommandValidator : AbstractValidator<DeletePetCommand>
     public DeletePetCommandValidator()
     {
         RuleFor(d => d.VolunteerId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("VolunteerId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "volunteer.id",
+                "VolunteerId cannot be empty",
+                "VolunteerId"));
         
         RuleFor(d => d.PetId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("PetId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "pet.id",
+                "PetId cannot be empty",
+                "PetId"));
     }
 }
