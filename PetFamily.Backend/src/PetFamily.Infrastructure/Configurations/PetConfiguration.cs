@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
+using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
+using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
 using Constants = PetFamily.Domain.Shared.Constants;
 
 namespace PetFamily.Infrastructure.Configurations;
@@ -19,6 +21,18 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasConversion(
                 id => id.Value,
                 value => PetId.Create(value));
+
+        builder.Property(p => p.VolunteerId)
+            .HasColumnName("volunteer_id")
+            .HasConversion(
+                id => id.Value,
+                value => VolunteerId.Create(value));
+        
+        builder.HasOne<Volunteer>()
+            .WithMany(v => v.Pets)
+            .HasForeignKey(p => p.VolunteerId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.ComplexProperty(p => p.Name, pb =>
         {
