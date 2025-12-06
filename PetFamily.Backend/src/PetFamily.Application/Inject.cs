@@ -12,6 +12,8 @@ using PetFamily.Application.VolunteersFeatures.GetWithPagination;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.HardDelete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.SoftDelete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.GetAll;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.GetById;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddMainFile;
@@ -62,6 +64,9 @@ public static class Inject
         
         services.AddScoped<DeleteSpeciesHandler>();
         services.AddScoped<DeleteBreedsHandler>();
+        
+        services.AddScoped<GetPetsByIdHandler>();
+        services.AddScoped<GetPetsHandler>();
         
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         

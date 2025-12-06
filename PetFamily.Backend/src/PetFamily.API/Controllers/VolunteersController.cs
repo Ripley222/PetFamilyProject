@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
+using PetFamily.API.Requests.Pets;
 using PetFamily.API.Requests.Volunteer.Create;
 using PetFamily.API.Requests.Volunteer.Get;
 using PetFamily.API.Requests.Volunteer.Pet;
@@ -10,12 +11,15 @@ using PetFamily.Application.VolunteersFeatures.Create;
 using PetFamily.Application.VolunteersFeatures.Delete;
 using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
 using PetFamily.Application.VolunteersFeatures.Delete.SoftDelete;
+using PetFamily.Application.VolunteersFeatures.DTOs;
 using PetFamily.Application.VolunteersFeatures.GetById;
 using PetFamily.Application.VolunteersFeatures.GetWithPagination;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.HardDelete;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Delete.SoftDelete;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.GetAll;
+using PetFamily.Application.VolunteersFeatures.PetFeatures.GetById;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddMainFile;
@@ -84,6 +88,38 @@ public class VolunteersController : ControllerBase
 
         var envelope = Envelope.Ok(result.Value);
 
+        return Ok(envelope);
+    }
+
+    [HttpGet("pets/{petId:Guid}")]
+    public async Task<ActionResult<PetDto>> GetPetById(
+        [FromRoute] Guid petId,
+        [FromServices] GetPetsByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetPetsByIdQuery(petId);
+        
+        var result = await handler.Handle(query, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        var envelope = Envelope.Ok(result.Value);
+        return Ok(envelope);
+    }
+    
+    [HttpGet("pets")]
+    public async Task<ActionResult<List<PetDto>>> GetPets(
+        [FromQuery] GetPetsRequest request,
+        [FromServices] GetPetsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request.ToQuery(), cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        var envelope = Envelope.Ok(result.Value);
         return Ok(envelope);
     }
 
