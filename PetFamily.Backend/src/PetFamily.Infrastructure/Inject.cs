@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Minio;
 using PetFamily.Application.Database;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Messaging;
+using PetFamily.Application.Options;
 using PetFamily.Application.Providers;
 using PetFamily.Application.SpeciesFeatures;
 using PetFamily.Application.VolunteersFeatures;
@@ -45,6 +47,9 @@ public static class Inject
     {
         services.Configure<MinioOptions>(
             configuration.GetSection(MinioOptions.MINIO));
+        
+        services.AddSingleton<IMinioBucketOptions>(sp =>
+            sp.GetRequiredService<IOptions<MinioOptions>>().Value.BucketOptions);
         
         services.AddMinio(options =>
         {
