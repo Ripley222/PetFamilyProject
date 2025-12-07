@@ -14,7 +14,7 @@ public record Name
 
     public static Result<Name, Error> Create(string value)
     {
-        if (string.IsNullOrEmpty(value))
+        if (string.IsNullOrWhiteSpace(value))
             return Errors.General.ValueIsRequired("PetName");
         
         if (value.Length > Constants.MAX_LENGTH_NAME)

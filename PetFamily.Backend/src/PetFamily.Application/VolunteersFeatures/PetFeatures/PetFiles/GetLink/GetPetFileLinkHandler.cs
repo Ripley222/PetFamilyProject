@@ -3,8 +3,8 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.FileProvider;
+using PetFamily.Application.Options;
 using PetFamily.Application.Providers;
-using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add;
 using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Add.AddManyFiles;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
@@ -15,11 +15,10 @@ namespace PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.GetLink;
 public class GetPetFileLinkHandler(
     IVolunteersRepository repository,
     IFileProvider fileProvider,
+    IMinioBucketOptions bucketOptions,
     IValidator<GetPetFileLinkCommand> validator,
     ILogger<AddPetFilesHandler> logger)
 {
-    private const string BUCKET_NAME = "photos";
-    
     public async Task<Result<string, ErrorList>> Handle(
         GetPetFileLinkCommand command,
         CancellationToken cancellationToken = default)
@@ -44,8 +43,8 @@ public class GetPetFileLinkHandler(
             : command.FileName.Replace(extension, string.Empty);
         
         var fileData = new FileData(
-            FilePath.Create(Guid.Parse(fileName), extension).Value, 
-            BUCKET_NAME);
+            FilePath.Create(Guid.Parse(fileName), extension), 
+            bucketOptions.BucketPhotos);
 
         var result = await fileProvider.GetFileLink(fileData, cancellationToken);
         if (result.IsFailure)

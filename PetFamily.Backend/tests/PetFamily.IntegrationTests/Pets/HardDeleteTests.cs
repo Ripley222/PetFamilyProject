@@ -56,7 +56,7 @@ public class HardDeleteTests(WebTestsFactory webTestsFactory) : PetsEntityFactor
         //arrange
         var cancellationToken = CancellationToken.None;
 
-        var filePath = FilePath.Create(Guid.NewGuid(), ".png").Value;
+        var filePath = FilePath.Create(Guid.NewGuid(), ".png");
         
         await ExecuteInMinio(async client =>
         {

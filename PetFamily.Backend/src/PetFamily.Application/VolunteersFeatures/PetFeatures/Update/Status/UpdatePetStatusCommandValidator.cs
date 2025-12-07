@@ -10,13 +10,20 @@ public class UpdatePetStatusCommandValidator : AbstractValidator<UpdatePetStatus
     public UpdatePetStatusCommandValidator()
     {
         RuleFor(u => u.VolunteerId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("VolunteerId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "volunteer.id",
+                "VolunteerId cannot be empty",
+                "VolunteerId"));
         
         RuleFor(u => u.PetId)
-            .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("PetId"));
+            .Must(i => i != Guid.Empty)
+            .WithError(Error.Validation(
+                "pet.id",
+                "PetId cannot be empty",
+                "PetId"));
 
-        RuleFor(u => u.HelpStatus).MustBeValueObject(HelpStatus.Create);
+        RuleFor(u => u.HelpStatus)
+            .MustBeValueObject(HelpStatus.Create);
     }
 }

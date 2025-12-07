@@ -11,13 +11,13 @@ namespace PetFamily.Application.VolunteersFeatures.GetById;
 
 public class GetVolunteersByIdHandler(
     IReadDbContext readDbContext,
-    IValidator<GetVolunteersByIdQuery> getVolunteersByIdQueryValidator)
+    IValidator<GetVolunteersByIdQuery> validator)
 {
-    public async Task<Result<VolunteerDto?, ErrorList>> Handle(
+    public async Task<Result<VolunteerDto, ErrorList>> Handle(
         GetVolunteersByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var validationResult = await getVolunteersByIdQueryValidator.ValidateAsync(query, cancellationToken);
+        var validationResult = await validator.ValidateAsync(query, cancellationToken);
         if (validationResult.IsValid is false)
             return validationResult.GetErrors();
 
@@ -35,9 +35,22 @@ public class GetVolunteersByIdHandler(
                 v.Description.Value,
                 v.YearsOfExperience,
                 v.PhoneNumber.Value,
-                v.Requisites,
-                v.Socials))
+                v.Requisites.Select(r => 
+                    new RequisitesDto
+                    {
+                        AccountNumber = r.AccountNumber,
+                        Description = r.Description,
+                        Title = r.Title
+                    }),
+                v.Socials.Select(s => new SocialNetworksDto
+                {
+                    Link = s.Link,
+                    Title = s.Title
+                })))
             .FirstOrDefaultAsync(cancellationToken);
+        
+        if (volunteer is null)
+            return Errors.Volunteer.NotFound().ToErrorList();
 
         return volunteer;
     }

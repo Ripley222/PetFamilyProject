@@ -51,6 +51,14 @@ public static class Errors
                return Error.NotFound("record.not.found", $"species not found");
           }
      }
+     
+     public static class Breeds
+     {
+          public static Error NotFound()
+          {
+               return Error.NotFound("record.not.found", $"breeds not found");
+          }
+     }
 
      public static class Database
      {
