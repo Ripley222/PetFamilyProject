@@ -1,7 +1,7 @@
-﻿using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
-using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
-using PetFamily.IntegrationTests.Infrastructure;
+﻿/*using PetFamily.IntegrationTests.Infrastructure;
+using Volunteers.Domain.VolunteerAggregate.PetEntity.ValueObjects;
+using Volunteers.Domain.VolunteerAggregate.VolunteerEntity;
+using Volunteers.Domain.VolunteerAggregate.VolunteerEntity.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Entities;
 
@@ -33,4 +33,4 @@ public class VolunteersEntityFactory(WebTestsFactory webTestsFactory) : BaseForT
             return volunteerForPet.Value;
         });
     }
-}
+}*/

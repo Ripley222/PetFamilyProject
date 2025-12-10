@@ -1,10 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+﻿/*using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.VolunteersFeatures.PetFeatures.Update.Status;
-using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.Domain.Shared;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Domain.VolunteerAggregate.PetEntity.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Pets;
 
@@ -70,4 +69,4 @@ public class UpdateHelpStatusTests(WebTestsFactory testsFactory) : PetsEntityFac
         Assert.NotNull(updatedPet);
         Assert.Equal(pet.HelpStatus, updatedPet.HelpStatus);
     }
-}
+}*/

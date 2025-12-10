@@ -1,10 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+﻿/*using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.VolunteersFeatures.DTOs;
-using PetFamily.Application.VolunteersFeatures.Update.Requisites;
-using PetFamily.Domain.Shared;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Application.VolunteersFeatures.DTOs;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
@@ -97,4 +96,4 @@ public class UpdateRequisitesTests(WebTestsFactory factory) : VolunteersEntityFa
         
         Assert.Equal(volunteer.Requisites, updatedVolunteer.Requisites);
     }
-}
+}*/

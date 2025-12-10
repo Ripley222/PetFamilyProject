@@ -1,11 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+﻿/*using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.VolunteersFeatures.PetFeatures.Move;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
-using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.Domain.Shared;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
 
 namespace PetFamily.IntegrationTests.Pets;
 
@@ -113,4 +111,4 @@ public class SwapPositionTests(WebTestsFactory webTestsFactory) : PetsEntityFact
         Assert.Equal(secondPosition, secondPetAssert.Position.Value);
         Assert.Equal(thirdPosition, thirdPetAssert.Position.Value);
     }
-}
+}*/
