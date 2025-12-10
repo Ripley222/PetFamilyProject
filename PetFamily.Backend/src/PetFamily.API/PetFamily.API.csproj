@@ -25,8 +25,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PetFamily.Application\PetFamily.Application.csproj" />
-      <ProjectReference Include="..\PetFamily.Infrastructure\PetFamily.Infrastructure.csproj" />
+      <ProjectReference Include="..\Core\Framework\Framework.csproj" />
+      <ProjectReference Include="..\Core\SharedKernel\SharedKernel.csproj" />
+      <ProjectReference Include="..\Species\Species.Presenters\Species.Presenters.csproj" />
+      <ProjectReference Include="..\Volunteers\Volunteers.Presenters\Volunteers.Presenters.csproj" />
     </ItemGroup>
 
 </Project>

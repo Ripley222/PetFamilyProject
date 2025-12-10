@@ -1,9 +1,12 @@
+using Framework;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.API.Extensions;
-using PetFamily.Application;
-using PetFamily.Infrastructure;
 using Serilog;
 using Serilog.Events;
+using Species.Database;
+using Species.Presenters;
+using Volunteers.Infrastructure.Postgres;
+using Volunteers.Presenters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +31,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSerilog();
 
 builder.Services
-    .AddInfrastructure(builder.Configuration)
-    .AddApplication();
+    .AddVolunteerModule(builder.Configuration)
+    .AddSpeciesModule();
 
 var app = builder.Build();
 
@@ -42,9 +45,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
     await using var scope = app.Services.CreateAsyncScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var volunteersDbContext = scope.ServiceProvider.GetRequiredService<VolunteerDbContext>();
+    var speciesDbContext = scope.ServiceProvider.GetRequiredService<SpeciesDbContext>();
 
-    await dbContext.Database.MigrateAsync();
+    await volunteersDbContext.Database.MigrateAsync();
+    await speciesDbContext.Database.MigrateAsync();
 }
 
 app.UseSerilogRequestLogging();
@@ -53,8 +58,13 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
+app.MapEndpoints();
+
 app.Run();
 
-public partial class Program
+namespace PetFamily.API
 {
+    public partial class Program
+    {
+    }
 }
