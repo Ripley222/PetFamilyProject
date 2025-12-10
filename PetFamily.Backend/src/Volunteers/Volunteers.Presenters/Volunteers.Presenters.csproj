@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Core\Framework\Framework.csproj" />
+        <ProjectReference Include="..\..\Core\Infrastructure\Infrastructure.S3\Infrastructure.S3.csproj" />
+        <ProjectReference Include="..\Volunteers.Application\Volunteers.Application.csproj"/>
+        <ProjectReference Include="..\Volunteers.Infrastructure.Postgres\Volunteers.Infrastructure.Postgres.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+</Project>
