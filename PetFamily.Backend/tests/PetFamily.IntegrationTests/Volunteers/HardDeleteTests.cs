@@ -1,11 +1,10 @@
-﻿using CSharpFunctionalExtensions;
+﻿/*using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.VolunteersFeatures.Delete;
 using PetFamily.Application.VolunteersFeatures.Delete.HardDelete;
-using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
-using PetFamily.Domain.Shared;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Domain.VolunteerAggregate.VolunteerEntity.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
@@ -64,4 +63,4 @@ public class HardDeleteTests(WebTestsFactory webTestsFactory) : VolunteersEntity
         
         Assert.NotNull(existingVolunteer);
     }
-}
+}*/

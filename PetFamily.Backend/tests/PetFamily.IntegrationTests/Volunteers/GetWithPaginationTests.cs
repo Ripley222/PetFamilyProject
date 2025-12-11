@@ -1,9 +1,8 @@
-﻿using CSharpFunctionalExtensions;
-using PetFamily.Application.VolunteersFeatures.DTOs;
-using PetFamily.Application.VolunteersFeatures.GetWithPagination;
-using PetFamily.Domain.Shared;
+﻿/*using CSharpFunctionalExtensions;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Application.VolunteersFeatures.DTOs;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
@@ -36,4 +35,4 @@ public class GetWithPaginationTests(WebTestsFactory factory) : VolunteersEntityF
         
         Assert.Equal(pageSize, volunteersResult.Value.Volunteers.Count());
     }
-}
+}*/

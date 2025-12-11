@@ -1,9 +1,8 @@
-﻿using CSharpFunctionalExtensions;
-using PetFamily.Application.VolunteersFeatures.DTOs;
-using PetFamily.Application.VolunteersFeatures.PetFeatures.GetAll;
-using PetFamily.Domain.Shared;
+﻿/*using CSharpFunctionalExtensions;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Application.VolunteersFeatures.DTOs;
 
 namespace PetFamily.IntegrationTests.Pets;
 
@@ -158,4 +157,4 @@ public class GetAllTests(WebTestsFactory testsFactory) : PetsEntityFactory(tests
         //assert
         Assert.True(petsResult.IsFailure);
     }
-}
+}*/

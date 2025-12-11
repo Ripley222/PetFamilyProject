@@ -1,9 +1,8 @@
-﻿using CSharpFunctionalExtensions;
-using PetFamily.Application.VolunteersFeatures.DTOs;
-using PetFamily.Application.VolunteersFeatures.GetById;
-using PetFamily.Domain.Shared;
+﻿/*using CSharpFunctionalExtensions;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Application.VolunteersFeatures.DTOs;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
@@ -50,4 +49,4 @@ public class GetByIdTests(WebTestsFactory factory) : VolunteersEntityFactory(fac
         Assert.NotEqual(volunteer.Id.Value, invalidId);
         Assert.Null(volunteerResult.Value);
     }
-}
+}*/

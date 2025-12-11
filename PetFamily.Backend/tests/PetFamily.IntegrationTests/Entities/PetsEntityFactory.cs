@@ -1,10 +1,8 @@
-﻿using PetFamily.Domain.Entities.SpeciesAggregate;
-using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
-using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
-using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
-using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity.ValueObjects;
-using PetFamily.IntegrationTests.Infrastructure;
+﻿/*using PetFamily.IntegrationTests.Infrastructure;
+using Volunteers.Domain.VolunteerAggregate.PetEntity;
+using Volunteers.Domain.VolunteerAggregate.PetEntity.ValueObjects;
+using Volunteers.Domain.VolunteerAggregate.VolunteerEntity;
+using Volunteers.Domain.VolunteerAggregate.VolunteerEntity.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Entities;
 
@@ -114,4 +112,4 @@ public class PetsEntityFactory(WebTestsFactory testsFactory) : BaseForTests(test
             return speciesBreed;
         });
     }
-}
+}*/

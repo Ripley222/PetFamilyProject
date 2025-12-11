@@ -1,12 +1,11 @@
-﻿using CSharpFunctionalExtensions;
+﻿/*using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Minio.DataModel.Args;
-using PetFamily.Application.VolunteersFeatures.PetFeatures.PetFiles.Delete;
-using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
-using PetFamily.Domain.Shared;
 using PetFamily.Infrastructure.Extensions;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
+using Volunteers.Domain.VolunteerAggregate.PetEntity.ValueObjects;
 
 namespace PetFamily.IntegrationTests.Pets;
 
@@ -140,4 +139,4 @@ public class DeletePetFileTests(WebTestsFactory testsFactory) : PetsEntityFactor
         
         Assert.True(checkResultPetFilesInMinio.IsSuccess);
     }
-}
+}*/

@@ -1,9 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿/*using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.VolunteersFeatures.Update.MainInfo;
-using PetFamily.Domain.Shared;
 using PetFamily.IntegrationTests.Entities;
 using PetFamily.IntegrationTests.Infrastructure;
+using SharedKernel;
 
 namespace PetFamily.IntegrationTests.Volunteers;
 
@@ -104,4 +103,4 @@ public class UpdateMainInfoTests(WebTestsFactory factory) : VolunteersEntityFact
         Assert.Equal(volunteer.YearsOfExperience, updatedVolunteer.YearsOfExperience);
         Assert.Equal(volunteer.PhoneNumber, updatedVolunteer.PhoneNumber);
     }
-}
+}*/

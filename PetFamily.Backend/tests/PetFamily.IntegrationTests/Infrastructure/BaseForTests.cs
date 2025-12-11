@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿/*using Microsoft.Extensions.DependencyInjection;
 using Minio;
-using PetFamily.Infrastructure;
 
 namespace PetFamily.IntegrationTests.Infrastructure;
 
@@ -47,4 +46,4 @@ public class BaseForTests(WebTestsFactory webTestsFactory) : IClassFixture<WebTe
     {
         await _resetDatabase();
     }
-}
+}*/

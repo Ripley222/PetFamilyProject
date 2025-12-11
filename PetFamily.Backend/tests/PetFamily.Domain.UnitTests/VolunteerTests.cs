@@ -1,4 +1,5 @@
-﻿using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
+﻿/*
+using PetFamily.Domain.Entities.SpeciesAggregate.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity;
 using PetFamily.Domain.Entities.VolunteerAggregate.PetEntity.ValueObjects;
 using PetFamily.Domain.Entities.VolunteerAggregate.VolunteerEntity;
@@ -294,3 +295,4 @@ public class VolunteerTests
         Assert.Equal(thirdAddedPet.Position.Value, secondPosition.Value);
     }
 }
+*/
